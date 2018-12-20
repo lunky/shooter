@@ -34,14 +34,15 @@ class App extends Component {
     if (this.state.period===4){ return; }
     let periods = this.state.game;
     periods[this.state.period] = {flyers: this.state.flyers, badGuys: this.state.badGuys};
-    this.setState(state=>({ flyers: [], badGuys: [], periods: periods, period: state.period + 1}));
+    let nextPeriod = periods[this.state.period+1];
+    this.setState(state=>({ flyers: nextPeriod.flyers, badGuys: nextPeriod.badGuys, periods: periods, period: state.period + 1}));
   }
   periodDec(e) {
     if (this.state.period===1){ return; }
     let periods = this.state.game 
     periods[this.state.period] = {flyers: this.state.flyers, badGuys: this.state.badGuys};
-
-    this.setState(state=>({ flyers: [], badGuys: [], periods: periods, period: state.period - 1}));
+    let nextPeriod = periods[this.state.period-1];
+    this.setState(state=>({ flyers: nextPeriod.flyers, badGuys: nextPeriod.badGuys, periods: periods, period: state.period - 1}));
   }
   scoreFlyers(e) {
     e.preventDefault();
@@ -90,17 +91,21 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <div className="period">
-            <div>Period</div>
-            <button className="period" onClick={this.periodDec}>-</button>
-            <div className="label">{this.showPeriod()}</div>
-            <button className="period" onClick={this.periodInc}>+</button>
+          <div className="periodContainer">
+            <div className="period">
+              <div>Period</div>
+              <button className="period" onClick={this.periodDec}>-</button>
+              <div className="label">{this.showPeriod()}</div>
+              <button className="period" onClick={this.periodInc}>+</button>
+            </div>
           </div>
           <div className="container">
           <div className="boxScorePeriod">Period</div>
           <div className="boxScore">Flyers</div>
           <div className="boxScore">BadGuys</div>
           {this.showGame()}
+          <div className="separator"></div>
+          
           <div className="one">
             <div className="name">Flyers</div>
             <button className="add" onClick={this.scoreFlyers}>+</button>

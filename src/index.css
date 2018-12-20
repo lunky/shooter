@@ -41,20 +41,24 @@ button.subtract{
 .score{
   height: 30px;
 }
+
 .container {
   width: 80%;
-  height: 250px;
+  height: 80vh;
   margin: auto;
   padding: 10px;
 }
 .one {
   width: 50%;
-  height: 200px;
+  /* height: 80vh; */
   float: left;
 }
 .two {
   margin-left: 50%;
-  height: 200px;
+  /* height: 80vh; */
+}
+.periodContainer{
+  height: 20vh;
 }
 .boxScorePeriod, 
 .boxScore {
@@ -63,4 +67,20 @@ button.subtract{
 }
 .boxScore {
   width: 33%;
+}
+.separator{
+  height: 10%;
+}
+
+button {border-radius: 8px;}
+button.add {
+  -webkit-transition-duration: 0.4s; /* Safari */
+  transition-duration: 0.4s;
+}
+
+button.period:hover ,
+button.subtract:hover ,
+button.add:hover {
+  background-color: white; 
+  color: black;
 }
