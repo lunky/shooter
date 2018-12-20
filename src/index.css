@@ -12,3 +12,55 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+.game {
+  list-style-type: none;
+  padding-left: 0px;
+}
+.game li{
+  font-size: 20px;
+}
+.period .label{
+  display: inline-block;
+  width: 40px;
+}
+button.period{
+  padding: 10px;
+  font-size: 16pt;
+  margin:5px;
+}
+button.add{
+  padding: 40px;
+  font-size: 72pt;
+  margin: 5px;
+}
+button.subtract{
+  padding: 30px;
+  font-size: 36pt;
+  margin: 5px;
+}
+.score{
+  height: 30px;
+}
+.container {
+  width: 80%;
+  height: 250px;
+  margin: auto;
+  padding: 10px;
+}
+.one {
+  width: 50%;
+  height: 200px;
+  float: left;
+}
+.two {
+  margin-left: 50%;
+  height: 200px;
+}
+.boxScorePeriod, 
+.boxScore {
+  display: inline-block;
+  width: 33%;
+}
+.boxScore {
+  width: 33%;
+}
