@@ -33,8 +33,14 @@ button.add{
   font-size: 72pt;
   margin: 5px;
 }
+button.goal,
 button.subtract{
   padding: 30px;
+  font-size: 36pt;
+  margin: 5px;
+}
+button.goal{
+  padding: 10px;
   font-size: 36pt;
   margin: 5px;
 }
@@ -44,7 +50,6 @@ button.subtract{
 
 .container {
   width: 80%;
-  height: 80vh;
   margin: auto;
   padding: 10px;
 }
@@ -61,15 +66,13 @@ button.subtract{
   height: 20vh;
 }
 .boxScorePeriod, 
+.boxScoreGoal, 
 .boxScore {
   display: inline-block;
   width: 33%;
 }
-.boxScore {
-  width: 33%;
-}
 .separator{
-  height: 10%;
+  height: 2em;
 }
 
 button {border-radius: 8px;}

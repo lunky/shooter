@@ -1,93 +1,92 @@
 import React, { Component } from 'react';
 import './App.css';
+import BoxScore from './boxscore'
 
 class App extends Component {
   constructor(props){
     super();
-    let game = [];
-    game[1] = {flyers: [],badGuys: []};
-    game[2] = {flyers: [],badGuys: []};
-    game[3] = {flyers: [],badGuys: []};
+    let goals = [
+      {flyers: 0, badGuys: 0},
+      {flyers: 0, badGuys: 0},
+      {flyers: 0, badGuys: 0}
+    ];
+    let game = [
+      {flyers: 0,badGuys: 0},
+      {flyers: 0,badGuys: 0},
+      {flyers: 0,badGuys: 0},
+    ];
     this.state = {
-      period: 1,
-      flyers: [],
-      badGuys: [],
-      game: game
-    }
-    this.scoreFlyers = this.scoreFlyers.bind(this);
-    this.unscoreFlyers = this.unscoreFlyers.bind(this);
-    this.unscoreBadGuys = this.unscoreBadGuys.bind(this);
-    this.scoreBadGuys = this.scoreBadGuys.bind(this);
-    this.periodInc = this.periodInc.bind(this);
-    this.periodDec = this.periodDec.bind(this);
-    this.showPeriod = this.showPeriod.bind(this);
-    this.showGame = this.showGame.bind(this);
+      hideResults : false,
+      goals: goals,
+      game: game,
+      period: 0
+    };
+
   }
-  periodInc(e) {
-    if (this.state.period===3){ 
-      if(typeof this.state.game[4] === 'undefined') {
+  summary = () => {
+    this.setState(state => ({hideResults : !state.hideResults}));
+  }
+  reset = ()=>{
+    let goals = [
+      {flyers: 0, badGuys: 0},
+      {flyers: 0, badGuys: 0},
+      {flyers: 0, badGuys: 0}
+    ];
+    let game = [
+      {flyers: 0,badGuys: 0},
+      {flyers: 0,badGuys: 0},
+      {flyers: 0,badGuys: 0},
+    ];
+    this.setState({
+      hideResults : false,
+      goals: goals,
+      game: game,
+      period: 0
+    });
+
+  }
+  goalz = (who, val) => (e) => {
+    let goals = this.state.goals;
+    if(val<0 && goals[this.state.period][who] === 0){ return;} 
+    goals[this.state.period][who] += val;
+    this.setState({goals: goals});
+  }
+  periodInc = (e) => {
+    if (this.state.period===2){ 
+      if(typeof this.state.game[3] === 'undefined') {
         let game = this.state.game;
-        game.push({flyers:[], badGuys:[]})
-        this.setState({game:game});
+        game.push({flyers:0, badGuys:0})
+        let goals = this.state.goals;
+        goals.push({flyers:0, badGuys:0})
+        this.setState({game:game,goals:goals });
       }
     }
-    if (this.state.period===4){ return; }
+    if (this.state.period===3){ return; }
     let periods = this.state.game;
-    periods[this.state.period] = {flyers: this.state.flyers, badGuys: this.state.badGuys};
     let nextPeriod = periods[this.state.period+1];
     this.setState(state=>({ flyers: nextPeriod.flyers, badGuys: nextPeriod.badGuys, periods: periods, period: state.period + 1}));
   }
-  periodDec(e) {
-    if (this.state.period===1){ return; }
-    let periods = this.state.game 
-    periods[this.state.period] = {flyers: this.state.flyers, badGuys: this.state.badGuys};
-    let nextPeriod = periods[this.state.period-1];
-    this.setState(state=>({ flyers: nextPeriod.flyers, badGuys: nextPeriod.badGuys, periods: periods, period: state.period - 1}));
+  periodDec = (e) =>{
+    if (this.state.period===0){ return; }
+    this.setState(state=>({ period: state.period - 1}));
   }
-  scoreFlyers(e) {
+  shotz = (who, val) => (e) => {
     e.preventDefault();
-    let flyers = this.state.game[this.state.period].flyers;
-    flyers.push(1);
-    this.setState({ flyers: flyers });
-  }
-  unscoreFlyers(e) {
-    e.preventDefault();
-    if (this.state.flyers===0){return;}
-    let flyers = this.state.game[this.state.period].flyers;
-    flyers.pop();
-    this.setState({ flyers: flyers });
-  }
-  scoreBadGuys(e) {
-    let badGuys = this.state.game[this.state.period].badGuys;
-    badGuys.push(1);
-    e.preventDefault();
-    this.setState({ badGuys: badGuys });
-  }
-  unscoreBadGuys(e) {
-    e.preventDefault();
-    if (this.state.badGuys===0){return;}
-    let badGuys = this.state.game[this.state.period].badGuys;
-    badGuys.pop();
-    this.setState({ badGuys: badGuys });
+    let game = this.state.game;
+    if (val<0 &&game[this.state.period][who]===0){return;}
+    game[this.state.period][who] += val;
+    this.setState({game: game});
   }
   showPeriod(){
-    if(this.state.period !== 4){
-      return this.state.period;
+    if(this.state.period !== 3){
+      return this.state.period +1;
     }
     return "OT"
   }
-  showGame(){
-    let game = this.state.game;
-    let flyers = game.map((period,i) => {
-      return (<div>
-                <div className="boxScorePeriod">{i===4?"OT":i}</div>
-                <div className="boxScore">{period.flyers.reduce((a, b) => a + b, 0)}</div>
-                <div className="boxScore">{period.badGuys.reduce((a, b) => a + b, 0)}</div>
-              </div>)
-    })
-    return flyers;
-  }
   render() {
+    const {game,goals} = this.state;
+    const notResults = this.state.hideResults ? {display: 'none'} : {}
+    const results = this.state.hideResults ? {} : {display: 'none'}
     return (
       <div className="App">
         <header className="App-header">
@@ -100,22 +99,31 @@ class App extends Component {
             </div>
           </div>
           <div className="container">
-          <div className="boxScorePeriod">Period</div>
-          <div className="boxScore">Flyers</div>
-          <div className="boxScore">BadGuys</div>
-          {this.showGame()}
+          <div style={results}>
+            {new Date().toLocaleString()}
+            <div className="separator"></div>
+          </div>
+          <BoxScore title="shots" game={game} />
           <div className="separator"></div>
           
-          <div className="one">
+          <div className="one" style={notResults}>
             <div className="name">Flyers</div>
-            <button className="add" onClick={this.scoreFlyers}>+</button>
-            <button className="subtract" onClick={this.unscoreFlyers}>-</button>
+            <button className="add" onClick={this.shotz('flyers',1)}>+</button>
+            <button className="subtract" onClick={this.shotz('flyers',-1)}>-</button>
+            <button className="goal" onClick={this.goalz('flyers', 1)}>goal</button>
+            <button className="goal" onClick={this.goalz('flyers', -1)}>-</button>
           </div>
-          <div className="two">
+          <div className="two" style={notResults} >
             <div className="name" >Bad Guys </div>
-            <button className="add" onClick={this.scoreBadGuys}>+</button>
-            <button className="subtract" onClick={this.unscoreBadGuys}>-</button>
+            <button className="add" onClick={this.shotz('badGuys',1)}>+</button>
+            <button className="subtract" onClick={this.shotz('badGuys', -1)}>-</button>
+            <button className="goal" onClick={this.goalz('badGuys', 1)}>goal</button>
+            <button className="goal" onClick={this.goalz('badGuys', -1)}>-</button>
           </div>
+          <BoxScore title="goals" game={goals} />
+          <div className="separator"></div>
+        <button onClick={this.reset} className="reset">reset</button>
+        <button onClick={this.summary} className="reset">summary</button>
         </div>
         </header>
       </div>
