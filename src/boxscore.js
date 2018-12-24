@@ -18,6 +18,15 @@ class BoxScore extends Component{
         })
         return shots;
     }
+    summary(){
+        const {game, results} = this.props;
+        let shots = (<div style={results}>
+                     <div className="total boxScorePeriod">&nbsp;</div>
+                     <div className="total boxScore">{game.reduce((acc,cur) => acc + cur.flyers,0)}</div>
+                     <div className="total boxScore">{game.reduce((acc,cur) => acc + cur.badGuys,0)}</div>
+                    </div>)
+        return shots;
+    }
     render(){
         const {title} = this.props;
         return(
@@ -28,6 +37,9 @@ class BoxScore extends Component{
           <div className="boxScore">BadGuys</div>
           <div>
           {this.showShots()}
+          </div>
+          <div>
+              {this.summary()}
           </div>
           </div>)
     }

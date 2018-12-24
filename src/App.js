@@ -123,6 +123,7 @@ class App extends Component {
           <BoxScore title="goals" game={goals} />
           <div className="separator"></div>
         <button onClick={this.reset} className="reset">reset</button>
+        &nbsp;&nbsp;
         <button onClick={this.summary} className="reset">summary</button>
         </div>
         </header>

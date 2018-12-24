@@ -71,12 +71,16 @@ button.goal{
   display: inline-block;
   width: 33%;
 }
+.total{
+  border-top: 1px white solid;
+}
 .separator{
   height: 2em;
 }
 
 button {border-radius: 8px;}
 button.add {
+  background-color: rgb(221, 221, 221);
   -webkit-transition-duration: 0.4s; /* Safari */
   transition-duration: 0.4s;
 }

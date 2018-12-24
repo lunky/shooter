@@ -21,5 +21,9 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "scripts": {
+      "deploy": "aws --profile lunky s3 sync build s3://shooter.midworld.org" 
+  }
 }
+
