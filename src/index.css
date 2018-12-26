@@ -78,9 +78,11 @@ button.goal{
   height: 2em;
 }
 
-button {border-radius: 8px;}
-button.add {
+button {
+  border-radius: 8px;
   background-color: rgb(221, 221, 221);
+}
+button.add {
   -webkit-transition-duration: 0.4s; /* Safari */
   transition-duration: 0.4s;
 }
