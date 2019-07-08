@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "handlebars": "^4.1.2",
+    "js-yaml": "^3.13.1",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
     "react-scripts": "2.1.1"
@@ -12,7 +14,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "aws --profile lunky s3 sync build s3://shooter.midworld.org" 
+    "deploy": "aws --profile lunky s3 sync build s3://shooter.midworld.org"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -24,4 +26,3 @@
     "not op_mini all"
   ]
 }
-
