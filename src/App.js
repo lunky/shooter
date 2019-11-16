@@ -24,6 +24,11 @@ class App extends Component {
       period: 0
     };
   }
+   componentDidUpdate(prevProps, prevState) {
+        if (prevState !== this.state) {
+            ls.set('gameState', this.state);
+        }
+    }
 
   componentDidMount(){
     const savedState = ls.get('gameState') || [];
@@ -34,8 +39,7 @@ class App extends Component {
   }
 
   summary = () => {
-    this.setState(state => ({hideResults : !state.hideResults}),
-        ()=>ls.set('gameState', this.state));
+    this.setState(state => ({hideResults : !state.hideResults}));
     this.vibrate();
   }
   reset = ()=>{
@@ -54,15 +58,14 @@ class App extends Component {
       goals: goals,
       game: game,
       period: 0
-    },()=> ls.set('gameState', this.state));
+    });
     this.vibrate();
   }
   goalz = (who, val) => (e) => {
     let goals = this.state.goals;
     if(val<0 && goals[this.state.period][who] === 0){ return;} 
     goals[this.state.period][who] += val;
-    this.setState({goals: goals}
-        , ()=>ls.set('gameState', this.state));
+    this.setState({goals: goals});
     this.vibrate();
   }
   periodInc = (e) => {
@@ -72,21 +75,18 @@ class App extends Component {
         game.push({flyers:0, badGuys:0})
         let goals = this.state.goals;
         goals.push({flyers:0, badGuys:0})
-        this.setState({game:game,goals:goals }
-                , ()=>ls.set('gameState', this.state));
+        this.setState({game:game,goals:goals });
       }
     }
     if (this.state.period===3){ return; }
     let periods = this.state.game;
     let nextPeriod = periods[this.state.period+1];
-    this.setState(state=>({ flyers: nextPeriod.flyers, badGuys: nextPeriod.badGuys, periods: periods, period: state.period + 1})
-        , () => ls.set('gameState', this.state));
+    this.setState(state=>({ flyers: nextPeriod.flyers, badGuys: nextPeriod.badGuys, periods: periods, period: state.period + 1}));
     this.vibrate();
   }
   periodDec = (e) =>{
     if (this.state.period===0){ return; }
-    this.setState(state=>({ period: state.period - 1})
-        , () => ls.set('gameState', this.state));
+    this.setState(state=>({ period: state.period - 1}));
     this.vibrate();
   }
 
@@ -99,8 +99,7 @@ class App extends Component {
     let game = this.state.game;
     if (val<0 &&game[this.state.period][who]===0){return;}
     game[this.state.period][who] += val;
-    this.setState({game: game}
-        , () => ls.set('gameState', this.state));
+    this.setState({game: game});
     this.vibrate();
   }
   showPeriod(){
