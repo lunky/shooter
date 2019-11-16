@@ -25,7 +25,7 @@ class App extends Component {
     };
   }
    componentDidUpdate(prevProps, prevState) {
-        if (prevState !== this.state) {
+        if (prevState.init && prevState !== this.state) {
             ls.set('gameState', this.state);
         }
     }
@@ -33,8 +33,7 @@ class App extends Component {
   componentDidMount(){
     const savedState = ls.get('gameState') || [];
     if (savedState !== []){
-        console.log("hideresults : " + this.state.hideResults)
-        this.setState(savedState);
+        this.setState({...savedState, init:true});
     }
   }
 
@@ -147,7 +146,7 @@ class App extends Component {
           </div>
           <BoxScore title="goals" game={goals} />
           <div className="separator"></div>
-        <button onClick={this.reset} className="reset">reset</button>
+        <button  onClick={(e) => { if (window.confirm('Are you sure you want to reset?')) this.reset() } }> reset </button>
         &nbsp;&nbsp;
         <button onClick={this.summary} className="reset">summary</button>
         </div>
