@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "handlebars": "^4.1.2",
+    "handlebars": "^4.5.3",
     "js-yaml": "^3.13.1",
     "local-storage": "^2.0.0",
     "prop-types": "^15.7.2",
