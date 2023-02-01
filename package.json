@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "gh-pages": "^5.0.0",
     "handlebars": "^4.1.2",
     "js-yaml": "^3.13.1",
     "local-storage": "^2.0.0",
@@ -11,12 +12,13 @@
     "react-dom": "^16.12.0",
     "react-scripts": "^3.0.1"
   },
+  "homepage": "https://lunky.github.io/shooter/",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "aws --profile lunky s3 sync build s3://shooter.midworld.org"
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": "react-app"
