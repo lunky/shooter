@@ -28,12 +28,12 @@ class BoxScore extends Component{
         return shots;
     }
     render(){
-        const {title} = this.props;
+        const {title,homeTeam} = this.props;
         return(
         <div>
           <div>{title}</div>
           <div className="boxScorePeriod">Period</div>
-          <div className="boxScore">Flyers</div>
+          <div className="boxScore">{homeTeam}</div>
           <div className="boxScore">BadGuys</div>
           <div>
           {this.showShots()}

@@ -111,6 +111,7 @@ class App extends Component {
     const {game,goals} = this.state;
     const notResults = this.state.hideResults ? {display: 'none'} : {}
     const results = this.state.hideResults ? {} : {display: 'none'}
+    const homeTeam = "Flyerz";
     return (
       <div className="App">
         <header className="App-header">
@@ -127,11 +128,11 @@ class App extends Component {
             {new Date().toLocaleString()}
             <div className="separator"></div>
           </div>
-          <BoxScore title="shots" game={game} />
+          <BoxScore title="shots" homeTeam={homeTeam} game={game} />
           <div className="separator"></div>
           
           <div className="one" style={notResults}>
-            <div className="name">Flyers</div>
+            <div className="name">{homeTeam}</div>
             <button className="add" onClick={this.shotz('flyers',1)}>+</button>
             <button className="subtract" onClick={this.shotz('flyers',-1)}>-</button>
             <button className="goal" onClick={this.goalz('flyers', 1)}>goal</button>
@@ -144,7 +145,7 @@ class App extends Component {
             <button className="goal" onClick={this.goalz('badGuys', 1)}>goal</button>
             <button className="goal" onClick={this.goalz('badGuys', -1)}>-</button>
           </div>
-          <BoxScore title="goals" game={goals} />
+          <BoxScore title="goals" homeTeam={homeTeam} game={goals} />
           <div className="separator"></div>
         <button  onClick={(e) => { if (window.confirm('Are you sure you want to reset?')) this.reset() } }> reset </button>
         &nbsp;&nbsp;
