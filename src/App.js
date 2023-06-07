@@ -111,7 +111,7 @@ class App extends Component {
     const {game,goals} = this.state;
     const notResults = this.state.hideResults ? {display: 'none'} : {}
     const results = this.state.hideResults ? {} : {display: 'none'}
-    const homeTeam = "Flyerz";
+    const homeTeam = "Flyers";
     return (
       <div className="App">
         <header className="App-header">
