@@ -10,13 +10,15 @@ class App extends Component {
     let goals = [
       {flyers: 0, badGuys: 0},
       {flyers: 0, badGuys: 0},
-      {flyers: 0, badGuys: 0}
+      {flyers: 0, badGuys: 0},
     ];
+    if(process.env.REACT_APP_BadmintonMode){ goals.pop();}
     let game = [
       {flyers: 0,badGuys: 0},
       {flyers: 0,badGuys: 0},
-      {flyers: 0,badGuys: 0},
+      {flyers: 0, badGuys: 0},
     ];
+    if(process.env.REACT_APP_BadmintonMode){ game.pop();}
     this.state = {
       hideResults : false,
       goals: goals,
@@ -45,13 +47,15 @@ class App extends Component {
     let goals = [
       {flyers: 0, badGuys: 0},
       {flyers: 0, badGuys: 0},
-      {flyers: 0, badGuys: 0}
+      {flyers: 0, badGuys: 0},
     ];
+    if(process.env.REACT_APP_BadmintonMode){ goals.pop();}
     let game = [
-      {flyers: 0,badGuys: 0},
-      {flyers: 0,badGuys: 0},
-      {flyers: 0,badGuys: 0},
+      {flyers: 0, badGuys: 0},
+      {flyers: 0, badGuys: 0},
+      {flyers: 0, badGuys: 0},
     ];
+    if(process.env.REACT_APP_BadmintonMode){ game.pop();}
     this.setState({
       hideResults : false,
       goals: goals,
@@ -68,6 +72,16 @@ class App extends Component {
     this.vibrate();
   }
   periodInc = (e) => {
+    if (this.state.period===1 && process.env.REACT_APP_BadmintonMode){ 
+      if(typeof this.state.game[2] === 'undefined') {
+        let game = this.state.game;
+        game.push({flyers:0, badGuys:0})
+        let goals = this.state.goals;
+        goals.push({flyers:0, badGuys:0})
+        this.setState({game:game,goals:goals });
+      }
+    }
+    if (this.state.period===2 && process.env.REACT_APP_BadmintonMode){ return; }
     if (this.state.period===2){ 
       if(typeof this.state.game[3] === 'undefined') {
         let game = this.state.game;
@@ -90,7 +104,9 @@ class App extends Component {
   }
 
   vibrate = () =>  {
-    window.navigator.vibrate(100);
+    try{
+      window.navigator.vibrate(100);
+    }catch(v){ }
   }
 
   shotz = (who, val) => (e) => {
@@ -101,23 +117,31 @@ class App extends Component {
     this.setState({game: game});
     this.vibrate();
   }
+
   showPeriod(){
     if(this.state.period !== 3){
       return this.state.period +1;
     }
+    else if(process.env.REACT_APP_BadmintonMode){
+      return this.state.period;
+    }
     return "OT"
   }
+
   render() {
     const {game,goals} = this.state;
     const notResults = this.state.hideResults ? {display: 'none'} : {}
     const results = this.state.hideResults ? {} : {display: 'none'}
-    const homeTeam = "Flyers";
+    var shotsName = process.env.REACT_APP_Shots_name;
+    var homeTeam = process.env.REACT_APP_Flyers_name;
+    var badGuys = process.env.REACT_APP_Badguy_name;
+    var periodName = process.env.REACT_APP_PeriodName ?? "Period";
     return (
       <div className="App">
         <header className="App-header">
           <div className="periodContainer">
             <div className="period">
-              <div>Period</div>
+              <div>{periodName}</div>
               <button className="period" onClick={this.periodDec}>-</button>
               <div className="label">{this.showPeriod()}</div>
               <button className="period" onClick={this.periodInc}>+</button>
@@ -128,24 +152,34 @@ class App extends Component {
             {new Date().toLocaleString()}
             <div className="separator"></div>
           </div>
-          <BoxScore title="shots" homeTeam={homeTeam} game={game} />
+          <BoxScore title={shotsName} homeTeam={homeTeam} game={game} periodName={periodName} badGuys={badGuys} />
           <div className="separator"></div>
           
           <div className="one" style={notResults}>
             <div className="name">{homeTeam}</div>
             <button className="add" onClick={this.shotz('flyers',1)}>+</button>
             <button className="subtract" onClick={this.shotz('flyers',-1)}>-</button>
-            <button className="goal" onClick={this.goalz('flyers', 1)}>goal</button>
-            <button className="goal" onClick={this.goalz('flyers', -1)}>-</button>
+            {process.env.REACT_APP_Hide_goals ?  null :
+               <div>
+              <button className="goal" onClick={this.goalz('flyers', 1)}>goal</button>
+              <button className="goal" onClick={this.goalz('flyers', -1)}>-</button>
+              </div>
+            }
           </div>
           <div className="two" style={notResults} >
-            <div className="name" >Bad Guys </div>
+            <div className="name" >{badGuys} </div>
             <button className="add" onClick={this.shotz('badGuys',1)}>+</button>
             <button className="subtract" onClick={this.shotz('badGuys', -1)}>-</button>
-            <button className="goal" onClick={this.goalz('badGuys', 1)}>goal</button>
-            <button className="goal" onClick={this.goalz('badGuys', -1)}>-</button>
+            {process.env.REACT_APP_Hide_goals ?  null :
+            <div>
+              <button className="goal" onClick={this.goalz('badGuys', 1)}>goal</button>
+              <button className="goal" onClick={this.goalz('badGuys', -1)}>-</button>
+            </div>
+            }
           </div>
+            {process.env.REACT_APP_Hide_goals ?  null :
           <BoxScore title="goals" homeTeam={homeTeam} game={goals} />
+            }
           <div className="separator"></div>
         <button  onClick={(e) => { if (window.confirm('Are you sure you want to reset?')) this.reset() } }> reset </button>
         &nbsp;&nbsp;
