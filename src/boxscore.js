@@ -20,7 +20,7 @@ class BoxScore extends Component{
     }
     summary(){
         const {game, results} = this.props;
-        let shots = process.env.REACT_APP_Hide_totals ?
+        let shots = process.env.REACT_APP_Hide_totals===true ?
             null:
         (<div style={results}>
                      <div className="total boxScorePeriod">&nbsp;</div>
