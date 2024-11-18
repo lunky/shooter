@@ -7,18 +7,21 @@ class App extends Component {
 
   constructor(props){
     super();
+    this.badmintonMode = (process.env.REACT_APP_BadmintonMode==="true" || process.env.REACT_APP_BadmintonMode===true);
+    this.hideGoals = (process.env.REACT_APP_Hide_goals === true|| process.env.REACT_APP_Hide_goals === "true");
+    this.hideTotals = (process.env.REACT_APP_Hide_totals === true|| process.env.REACT_APP_Hide_goals === "true");
     let goals = [
       {flyers: 0, badGuys: 0},
       {flyers: 0, badGuys: 0},
       {flyers: 0, badGuys: 0},
     ];
-    if(process.env.REACT_APP_BadmintonMode===true){ goals.pop();}
+    if(this.badmintonMode){ goals.pop();}
     let game = [
       {flyers: 0,badGuys: 0},
       {flyers: 0,badGuys: 0},
       {flyers: 0, badGuys: 0},
     ];
-    if(process.env.REACT_APP_BadmintonMode===true){ game.pop();}
+    if(this.badmintonMode){ game.pop();}
     this.state = {
       hideResults : false,
       goals: goals,
@@ -49,13 +52,13 @@ class App extends Component {
       {flyers: 0, badGuys: 0},
       {flyers: 0, badGuys: 0},
     ];
-    if(process.env.REACT_APP_BadmintonMode===true){ goals.pop();}
+    if(this.badmintonMode){ goals.pop();}
     let game = [
       {flyers: 0, badGuys: 0},
       {flyers: 0, badGuys: 0},
       {flyers: 0, badGuys: 0},
     ];
-    if(process.env.REACT_APP_BadmintonMode===true){ game.pop();}
+    if(this.badmintonMode){ game.pop();}
     this.setState({
       hideResults : false,
       goals: goals,
@@ -72,7 +75,7 @@ class App extends Component {
     this.vibrate();
   }
   periodInc = (e) => {
-    if (this.state.period===1 && process.env.REACT_APP_BadmintonMode===true){ 
+    if (this.state.period===1 && this.badmintonMode){ 
       if(typeof this.state.game[2] === 'undefined') {
         let game = this.state.game;
         game.push({flyers:0, badGuys:0})
@@ -81,7 +84,7 @@ class App extends Component {
         this.setState({game:game,goals:goals });
       }
     }
-    if ((this.state.period===2) && process.env.REACT_APP_BadmintonMode===true){ 
+    if ((this.state.period===2) && this.badmintonMode === true){ 
       return; 
     }
     if (this.state.period===2){ 
@@ -93,6 +96,8 @@ class App extends Component {
         this.setState({game:game,goals:goals });
       }
     }
+
+    if (this.badmintonMode && this.state.period===2){ return; }
     if (this.state.period===3){ return; }
     let periods = this.state.game;
     let nextPeriod = periods[this.state.period+1];
@@ -124,7 +129,7 @@ class App extends Component {
     if(this.state.period !== 3){
       return this.state.period +1;
     }
-    else if(process.env.REACT_APP_BadmintonMode===true){
+    else if(this.badmintonMode===true){
       return this.state.period;
     }
     return "OT"
@@ -143,7 +148,7 @@ class App extends Component {
         <header className="App-header">
           <div className="periodContainer">
             <div className="period">
-              <div>{periodName}</div>
+              <div>{this.badmintonMode ? "Badminton" : ""} {periodName}</div>
               <button className="period" onClick={this.periodDec}>-</button>
               <div className="label">{this.showPeriod()}</div>
               <button className="period" onClick={this.periodInc}>+</button>
@@ -154,14 +159,14 @@ class App extends Component {
             {new Date().toLocaleString()}
             <div className="separator"></div>
           </div>
-          <BoxScore title={shotsName} homeTeam={homeTeam} game={game} periodName={periodName} badGuys={badGuys} />
+          <BoxScore title={shotsName} homeTeam={homeTeam} game={game} periodName={periodName} badGuys={badGuys} hideTotals={this.hideTotals} />
           <div className="separator"></div>
           
           <div className="one" style={notResults}>
             <div className="name">{homeTeam}</div>
             <button className="add" onClick={this.shotz('flyers',1)}>+</button>
             <button className="subtract" onClick={this.shotz('flyers',-1)}>-</button>
-            {process.env.REACT_APP_Hide_goals===true ?  null :
+            {this.hideGoals ?  null :
                <div>
               <button className="goal" onClick={this.goalz('flyers', 1)}>goal</button>
               <button className="goal" onClick={this.goalz('flyers', -1)}>-</button>
@@ -172,14 +177,14 @@ class App extends Component {
             <div className="name" >{badGuys} </div>
             <button className="add" onClick={this.shotz('badGuys',1)}>+</button>
             <button className="subtract" onClick={this.shotz('badGuys', -1)}>-</button>
-            {process.env.REACT_APP_Hide_goals ===true ?  null :
+            {this.hideGoals ?  null :
             <div>
               <button className="goal" onClick={this.goalz('badGuys', 1)}>goal</button>
               <button className="goal" onClick={this.goalz('badGuys', -1)}>-</button>
             </div>
             }
           </div>
-            {process.env.REACT_APP_Hide_goals ===true ?  null :
+            {this.hideGoals ?  null :
           <BoxScore title="goals" homeTeam={homeTeam} game={goals} />
             }
           <div className="separator"></div>

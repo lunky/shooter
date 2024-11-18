@@ -19,13 +19,13 @@ class BoxScore extends Component{
         return shots;
     }
     summary(){
-        const {game, results} = this.props;
-        let shots = process.env.REACT_APP_Hide_totals===true ?
-            null:
+        const {game, results, hideTotals} = this.props;
+        var nbsp = String.fromCodePoint(160);
+        let shots = 
         (<div style={results}>
                      <div className="total boxScorePeriod">&nbsp;</div>
-                     <div className="total boxScore">{game.reduce((acc,cur) => acc + cur.flyers,0)}</div>
-                     <div className="total boxScore">{game.reduce((acc,cur) => acc + cur.badGuys,0)}</div>
+                     <div className="total boxScore">{hideTotals ? nbsp : game.reduce((acc,cur) => acc + cur.flyers,0)}</div>
+                     <div className="total boxScore">{hideTotals ? nbsp : game.reduce((acc,cur) => acc + cur.badGuys,0)}</div>
                     </div>)
         return shots;
     }
@@ -35,6 +35,7 @@ class BoxScore extends Component{
         return(
         <div>
           <div>{title}</div>
+          <div></div>
           <div className="boxScoreInWords">{scoreInWords}</div>
           <div className="boxScorePeriod">{periodName}</div>
           <div className="boxScore">{homeTeam}</div>
