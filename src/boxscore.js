@@ -29,17 +29,22 @@ class BoxScore extends Component{
                     </div>)
         return shots;
     }
+    shuttle(badmintonMode, who, side){
+        return badmintonMode ? 
+          (who === side ? <img alt="X" width="16" height="20" src="shuttle.gif"/>: <span className="shuttlePlaceHolder"/>)
+        :null
+    }
     render(){
-        const {title,homeTeam,badGuys,periodName,scoreInWords } = this.props;
-        
+        const {title,homeTeam,badGuys,periodName,scoreInWords,who, badmintonMode } = this.props;
+         
         return(
         <div>
+          <div style={{display:(badmintonMode ? "block" : "none" )}} className="boxScoreInWords">{scoreInWords}</div>
           <div>{title}</div>
           <div></div>
-          <div className="boxScoreInWords">{scoreInWords}</div>
-          <div className="boxScorePeriod">{periodName}</div>
-          <div className="boxScore">{homeTeam}</div>
-          <div className="boxScore">{badGuys}</div>
+          <div  className="boxScorePeriod">{periodName}</div>
+          <div className="boxScore">{homeTeam} {this.shuttle(badmintonMode, who, 'flyers')}</div>
+          <div className="boxScore">{badGuys} {this.shuttle(badmintonMode, who, 'badGuys')}</div>
           <div>
           {this.showShots()}
           </div>

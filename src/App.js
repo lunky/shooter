@@ -26,7 +26,8 @@ class App extends Component {
       hideResults : false,
       goals: goals,
       game: game,
-      period: 0
+      period: 0,
+      score: "0 serving 0"
     };
   }
    componentDidUpdate(prevProps, prevState) {
@@ -63,7 +64,9 @@ class App extends Component {
       hideResults : false,
       goals: goals,
       game: game,
-      period: 0
+      period: 0,
+      score: "0 serving 0",
+      last: null
     });
     this.vibrate();
   }
@@ -116,12 +119,16 @@ class App extends Component {
     }catch(v){ }
   }
 
+  opponent = (who) => {
+    return who==='flyers' ? 'badGuys': 'flyers'
+  }
   shotz = (who, val) => (e) => {
     e.preventDefault();
     let game = this.state.game;
     if (val<0 &&game[this.state.period][who]===0){return;}
     game[this.state.period][who] += val;
-    this.setState({game: game});
+    let score = `${game[this.state.period][who]} serving ${game[this.state.period][this.opponent(who)]}`;
+    this.setState({last: who, score: score, game: game});
     this.vibrate();
   }
 
@@ -136,7 +143,7 @@ class App extends Component {
   }
 
   render() {
-    const {game,goals} = this.state;
+    const {game,goals, score} = this.state;
     const notResults = this.state.hideResults ? {display: 'none'} : {}
     const results = this.state.hideResults ? {} : {display: 'none'}
     var shotsName = process.env.REACT_APP_Shots_name;
@@ -159,7 +166,10 @@ class App extends Component {
             {new Date().toLocaleString()}
             <div className="separator"></div>
           </div>
-          <BoxScore title={shotsName} homeTeam={homeTeam} game={game} periodName={periodName} badGuys={badGuys} hideTotals={this.hideTotals} />
+          <BoxScore title={shotsName} homeTeam={homeTeam} 
+          game={game} periodName={periodName} badGuys={badGuys} 
+          badmintonMode={this.badmintonMode}
+          hideTotals={this.hideTotals} scoreInWords={score} who={this.state.last} />
           <div className="separator"></div>
           
           <div className="one" style={notResults}>
