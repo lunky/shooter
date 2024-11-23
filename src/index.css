@@ -68,7 +68,8 @@ button.goal{
 .boxScorePeriod, 
 .boxScoreGoal, 
 .boxScore {
-  display: inline-block;
+  display: inline-flex;
+  align-items: baseline;
   width: 33%;
 }
 .total{

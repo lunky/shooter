@@ -1,0 +1,16 @@
+{
+  "formatter": {
+    "indentStyle": "space" // default is `tab`
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single", // default is `double`
+      "lineWidth": 120 // override `formatter.lineWidth`
+    }
+  },
+  "json": {
+    "formatter": {
+      "enabled": false
+    }
+  }
+}

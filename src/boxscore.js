@@ -1,4 +1,6 @@
 import React, {Component} from 'react';
+import { EditText } from 'react-edit-text';
+import 'react-edit-text/dist/index.css';
 
 class BoxScore extends Component{
     shouldComponentUpdate(nextProps){
@@ -9,8 +11,8 @@ class BoxScore extends Component{
     }
     showShots(){
         const {game} = this.props;
-        let shots = game.map((period,i) => {
-            return (<div key={i}>
+        const shots = game.map((period,i) => {
+            return (<div key={period} >
                         <div className="boxScorePeriod">{i===3?"OT":i+1}</div>
                         <div className="boxScore">{period.flyers}</div>
                         <div className="boxScore">{period.badGuys}</div>
@@ -20,8 +22,8 @@ class BoxScore extends Component{
     }
     summary(){
         const {game, results, hideTotals} = this.props;
-        var nbsp = String.fromCodePoint(160);
-        let shots = 
+        const nbsp = String.fromCodePoint(160);
+        const shots = 
         (<div style={results}>
                      <div className="total boxScorePeriod">&nbsp;</div>
                      <div className="total boxScore">{hideTotals ? nbsp : game.reduce((acc,cur) => acc + cur.flyers,0)}</div>
@@ -34,17 +36,26 @@ class BoxScore extends Component{
           (who === side ? <img alt="X" width="16" height="20" src="shuttle.gif"/>: <span className="shuttlePlaceHolder"/>)
         :null
     }
+    saving = ({ name, value, previousValue }) => {
+        const {onSave} = this.props;
+
+        if(onSave!=null){
+            onSave({name, value, previousValue});
+        }
+        console.log(`boxscore ${name} saved as: ${value} (prev: ${previousValue})`);
+  
+    };
     render(){
-        const {title,homeTeam,badGuys,periodName,scoreInWords,who, badmintonMode } = this.props;
+        const {title,homeTeam,badGuys,periodName,scoreInWords,who, badmintonMode,  } = this.props;
          
         return(
         <div>
-          <div style={{display:(badmintonMode ? "block" : "none" )}} className="boxScoreInWords">{scoreInWords}</div>
+          {badmintonMode ?  <div className="boxScoreInWords">{scoreInWords}</div> : null}
           <div>{title}</div>
-          <div></div>
+          <div />
           <div  className="boxScorePeriod">{periodName}</div>
-          <div className="boxScore">{homeTeam} {this.shuttle(badmintonMode, who, 'flyers')}</div>
-          <div className="boxScore">{badGuys} {this.shuttle(badmintonMode, who, 'badGuys')}</div>
+          <div className="boxScore"><EditText onSave={this.saving} defaultValue={homeTeam} /> {this.shuttle(badmintonMode, who, 'flyers')}</div>
+          <div className="boxScore"><EditText onSave={this.saving}  defaultValue={badGuys}/> {this.shuttle(badmintonMode, who, 'badGuys')}</div>
           <div>
           {this.showShots()}
           </div>
