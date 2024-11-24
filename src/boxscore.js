@@ -11,11 +11,11 @@ class BoxScore extends Component{
     }
     showShots(){
         const {game} = this.props;
-        const shots = game.map((period,i) => {
-            return (<div key={period} >
+        const shots = game.map((match,i) => {
+            return (<div key={match.period+1} >
                         <div className="boxScorePeriod">{i===3?"OT":i+1}</div>
-                        <div className="boxScore">{period.flyers}</div>
-                        <div className="boxScore">{period.badGuys}</div>
+                        <div className="boxScore flyers" >{match.flyers}</div>
+                        <div className="boxScore badGuys">{match.badGuys}</div>
                     </div>)
         })
         return shots;
@@ -51,11 +51,11 @@ class BoxScore extends Component{
         return(
         <div>
           {badmintonMode ?  <div className="boxScoreInWords">{scoreInWords}</div> : null}
-          <div>{title}</div>
+          <div data-testid="title">{title}</div>
           <div />
-          <div  className="boxScorePeriod">{periodName}</div>
-          <div className="boxScore"><EditText onSave={this.saving} defaultValue={homeTeam} /> {this.shuttle(badmintonMode, who, 'flyers')}</div>
-          <div className="boxScore"><EditText onSave={this.saving}  defaultValue={badGuys}/> {this.shuttle(badmintonMode, who, 'badGuys')}</div>
+          <div className="boxScorePeriod">{periodName}</div>
+          <div className="boxScore bsFlyers"><EditText onSave={this.saving} defaultValue={homeTeam} /> {this.shuttle(badmintonMode, who, 'flyers')}</div>
+          <div className="boxScore bsBadGuys"><EditText onSave={this.saving}  defaultValue={badGuys}/> {this.shuttle(badmintonMode, who, 'badGuys')}</div>
           <div>
           {this.showShots()}
           </div>

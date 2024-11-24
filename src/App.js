@@ -9,24 +9,20 @@ class App extends Component {
     this.badmintonMode =
       process.env.REACT_APP_BadmintonMode === "true" ||
       process.env.REACT_APP_BadmintonMode === true;
-    this.hideGoals =
-      process.env.REACT_APP_Hide_goals === true ||
-      process.env.REACT_APP_Hide_goals === "true";
-    this.hideTotals =
-      process.env.REACT_APP_Hide_totals === true ||
-      process.env.REACT_APP_Hide_goals === "true";
+    this.hideGoals = this.badmintonMode;
+    this.hideTotals = this.badmintonMode;
     const goals = [
-      { flyers: 0, badGuys: 0 },
-      { flyers: 0, badGuys: 0 },
-      { flyers: 0, badGuys: 0 },
+      { flyers: 0, badGuys: 0, period: 1 },
+      { flyers: 0, badGuys: 0, period: 2 },
+      { flyers: 0, badGuys: 0, period: 3 },
     ];
     if (this.badmintonMode) {
       goals.pop();
     }
     const game = [
-      { flyers: 0, badGuys: 0 },
-      { flyers: 0, badGuys: 0 },
-      { flyers: 0, badGuys: 0 },
+      { flyers: 0, badGuys: 0, period: 1 },
+      { flyers: 0, badGuys: 0, period: 2 },
+      { flyers: 0, badGuys: 0, period: 3 },
     ];
     if (this.badmintonMode) {
       game.pop();
@@ -50,6 +46,11 @@ class App extends Component {
     if (!savedState?.length) {
       // empty
       this.setState({ ...savedState, init: true });
+
+    const savedPrefs = ls.get("gamePrefs") || [];
+    if (!savedPrefs?.length) {
+      // empty
+      this.setState({ ...savedPrefs, init: true });
     }
   }
 
@@ -59,17 +60,17 @@ class App extends Component {
   };
   reset = () => {
     const goals = [
-      { flyers: 0, badGuys: 0 },
-      { flyers: 0, badGuys: 0 },
-      { flyers: 0, badGuys: 0 },
+      { flyers: 0, badGuys: 0, period: 1 },
+      { flyers: 0, badGuys: 0, period: 2 },
+      { flyers: 0, badGuys: 0, period: 3 },
     ];
     if (this.badmintonMode) {
       goals.pop();
     }
     const game = [
-      { flyers: 0, badGuys: 0 },
-      { flyers: 0, badGuys: 0 },
-      { flyers: 0, badGuys: 0 },
+      { flyers: 0, badGuys: 0, period: 1 },
+      { flyers: 0, badGuys: 0, period: 2 },
+      { flyers: 0, badGuys: 0, period: 3 },
     ];
     if (this.badmintonMode) {
       game.pop();
@@ -97,9 +98,9 @@ class App extends Component {
     if (this.state.period === 1 && this.badmintonMode) {
       if (typeof this.state.game[2] === "undefined") {
         const game = this.state.game;
-        game.push({ flyers: 0, badGuys: 0 });
+        game.push({ flyers: 0, badGuys: 0, period: 3});
         const goals = this.state.goals;
-        goals.push({ flyers: 0, badGuys: 0 });
+        goals.push({ flyers: 0, badGuys: 0, period: 3});
         this.setState({ game: game, goals: goals });
       }
     }
@@ -109,10 +110,10 @@ class App extends Component {
     if (this.state.period === 2) {
       if (typeof this.state.game[3] === "undefined") {
         const game = this.state.game;
-        game.push({ flyers: 0, badGuys: 0 });
+        game.push({ flyers: 0, badGuys: 0, period: 4 });
         const goals = this.state.goals;
-        goals.push({ flyers: 0, badGuys: 0 });
-        this.setState({ game: game, goals: goals });
+        goals.push({ flyers: 0, badGuys: 0, period: 4 });
+        this.setState({ game: game, goals: goals, period: 4 });
       }
     }
 
@@ -186,10 +187,8 @@ class App extends Component {
       <div className="App">
         <header className="App-header">
           <div className="periodContainer">
-            <div className="period">
-              <div>
-                {this.badmintonMode ? "Badminton" : ""} {periodName}
-              </div>
+            <div className="period" data-testid="periodName">
+              <div> {this.badmintonMode ? "Badminton" : ""} {periodName} </div>
               <button type="button" className="period" onClick={this.periodDec}>
                 -
               </button>
