@@ -6,9 +6,7 @@ import ls from "local-storage";
 class App extends Component {
   constructor(props) {
     super();
-    this.badmintonMode =
-      process.env.REACT_APP_BadmintonMode === "true" ||
-      process.env.REACT_APP_BadmintonMode === true;
+    this.badmintonMode = process.env.REACT_APP_BadmintonMode === "true" || process.env.REACT_APP_BadmintonMode === true;
     this.hideGoals = this.badmintonMode;
     this.hideTotals = this.badmintonMode;
     const goals = [
@@ -47,7 +45,7 @@ class App extends Component {
       // empty
       this.setState({ ...savedState, init: true });
     }
-    const savedPrefs= ls.get("gamePrefs") || [];
+    const savedPrefs = ls.get("gamePrefs") || [];
     if (!savedPrefs?.length) {
       // empty
       this.setState({ ...savedPrefs, init: true });
@@ -98,9 +96,9 @@ class App extends Component {
     if (this.state.period === 1 && this.badmintonMode) {
       if (typeof this.state.game[2] === "undefined") {
         const game = this.state.game;
-        game.push({ flyers: 0, badGuys: 0, period: 3});
+        game.push({ flyers: 0, badGuys: 0, period: 3 });
         const goals = this.state.goals;
-        goals.push({ flyers: 0, badGuys: 0, period: 3});
+        goals.push({ flyers: 0, badGuys: 0, period: 3 });
         this.setState({ game: game, goals: goals });
       }
     }
@@ -171,21 +169,21 @@ class App extends Component {
     }
     return "OT";
   }
+
   onSaveApp = ({ name, value, previousValue }) => {
     console.log(`app ${name} saved as: ${value} (prev: ${previousValue})`);
-    if(name==="homeTeam"){
-      const savedPrefs= ls.get("gamePrefs") || [];
+    if (name === "homeTeam") {
+      const savedPrefs = ls.get("gamePrefs") || [];
       const save = { ...savedPrefs, savedHomeTeam: value };
       this.setState({ ...save });
-      ls.set("gamePrefs", save );
+      ls.set("gamePrefs", save);
     }
-    if(name==="badGuys"){
-      const savedPrefs= ls.get("gamePrefs") || [];
+    if (name === "badGuys") {
+      const savedPrefs = ls.get("gamePrefs") || [];
       const save = { ...savedPrefs, savedBadGuys: value };
       this.setState({ ...save });
-      ls.set("gamePrefs", save );
+      ls.set("gamePrefs", save);
     }
-    // ls.set("gamePrefs", {savedHomeTeam:});
   };
 
   render() {
@@ -201,7 +199,10 @@ class App extends Component {
         <header className="App-header">
           <div className="periodContainer">
             <div className="period" data-testid="periodName">
-              <div> {this.badmintonMode ? "Badminton" : ""} {periodName} </div>
+              <div>
+                {" "}
+                {this.badmintonMode ? "Badminton" : ""} {periodName}{" "}
+              </div>
               <button type="button" className="period" onClick={this.periodDec}>
                 -
               </button>
@@ -214,7 +215,7 @@ class App extends Component {
           <div className="container">
             <div style={results}>
               {new Date().toLocaleString()}
-              <div className="separator"/>
+              <div className="separator" />
             </div>
             <BoxScore
               title={shotsName}
@@ -228,7 +229,7 @@ class App extends Component {
               scoreInWords={score}
               who={this.state.last}
             />
-            <div className="separator"/>
+            <div className="separator" />
             <div className="one" style={notResults}>
               <div className="name">{homeTeam}</div>
               <button type="button" className="add" onClick={this.shotz("flyers", 1)}>
@@ -267,14 +268,12 @@ class App extends Component {
                 </div>
               )}
             </div>
-            {this.hideGoals ? null : (
-              <BoxScore title="goals" homeTeam={homeTeam} game={goals} />
-            )}
-            <div className="separator"/>
-            <button type="button"
+            {this.hideGoals ? null : <BoxScore title="goals" homeTeam={homeTeam} game={goals} />}
+            <div className="separator" />
+            <button
+              type="button"
               onClick={(e) => {
-                if (window.confirm("Are you sure you want to reset?"))
-                  this.reset();
+                if (window.confirm("Are you sure you want to reset?")) this.reset();
               }}
             >
               {" "}
