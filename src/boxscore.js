@@ -46,16 +46,15 @@ class BoxScore extends Component{
   
     };
     render(){
-        const {title,homeTeam,badGuys,periodName,scoreInWords,who, badmintonMode,  } = this.props;
-         
+        const {title,homeTeam,badGuys,periodName,scoreInWords,who,badmintonMode} = this.props;
         return(
         <div>
           {badmintonMode ?  <div className="boxScoreInWords">{scoreInWords}</div> : null}
           <div data-testid="title">{title}</div>
           <div />
           <div className="boxScorePeriod">{periodName}</div>
-          <div className="boxScore bsFlyers"><EditText onSave={this.saving} defaultValue={homeTeam} /> {this.shuttle(badmintonMode, who, 'flyers')}</div>
-          <div className="boxScore bsBadGuys"><EditText onSave={this.saving}  defaultValue={badGuys}/> {this.shuttle(badmintonMode, who, 'badGuys')}</div>
+          <div className="boxScore bsFlyers"><EditText name="homeTeam" onSave={this.saving} defaultValue={homeTeam} /> {this.shuttle(badmintonMode, who, 'flyers')}</div>
+          <div className="boxScore bsBadGuys"><EditText name="badGuys" onSave={this.saving}  defaultValue={badGuys}/> {this.shuttle(badmintonMode, who, 'badGuys')}</div>
           <div>
           {this.showShots()}
           </div>
@@ -65,5 +64,4 @@ class BoxScore extends Component{
           </div>)
     }
 }
-    
 export default BoxScore;

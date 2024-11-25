@@ -46,8 +46,8 @@ class App extends Component {
     if (!savedState?.length) {
       // empty
       this.setState({ ...savedState, init: true });
-
-    const savedPrefs = ls.get("gamePrefs") || [];
+    }
+    const savedPrefs= ls.get("gamePrefs") || [];
     if (!savedPrefs?.length) {
       // empty
       this.setState({ ...savedPrefs, init: true });
@@ -172,16 +172,29 @@ class App extends Component {
     return "OT";
   }
   onSaveApp = ({ name, value, previousValue }) => {
-    console.log(`app${name} saved as: ${value} (prev: ${previousValue})`);
+    console.log(`app ${name} saved as: ${value} (prev: ${previousValue})`);
+    if(name==="homeTeam"){
+      const savedPrefs= ls.get("gamePrefs") || [];
+      const save = { ...savedPrefs, savedHomeTeam: value };
+      this.setState({ ...save });
+      ls.set("gamePrefs", save );
+    }
+    if(name==="badGuys"){
+      const savedPrefs= ls.get("gamePrefs") || [];
+      const save = { ...savedPrefs, savedBadGuys: value };
+      this.setState({ ...save });
+      ls.set("gamePrefs", save );
+    }
+    // ls.set("gamePrefs", {savedHomeTeam:});
   };
 
   render() {
-    const { game, goals, score } = this.state;
+    const { game, goals, score, savedBadGuys, savedHomeTeam } = this.state;
     const notResults = this.state.hideResults ? { display: "none" } : {};
     const results = this.state.hideResults ? {} : { display: "none" };
     const shotsName = process.env.REACT_APP_Shots_name;
-    const homeTeam = process.env.REACT_APP_Flyers_name;
-    const badGuys = process.env.REACT_APP_Badguy_name;
+    const homeTeam = this.state.savedHomeTeam || process.env.REACT_APP_Flyers_name;
+    const badGuys = this.state.savedBadGuys || process.env.REACT_APP_Badguy_name;
     const periodName = process.env.REACT_APP_PeriodName ?? "Period";
     return (
       <div className="App">
@@ -205,11 +218,11 @@ class App extends Component {
             </div>
             <BoxScore
               title={shotsName}
-              homeTeam={homeTeam}
+              homeTeam={savedHomeTeam}
               onSave={this.onSaveApp}
               game={game}
               periodName={periodName}
-              badGuys={badGuys}
+              badGuys={savedBadGuys}
               badmintonMode={this.badmintonMode}
               hideTotals={this.hideTotals}
               scoreInWords={score}
