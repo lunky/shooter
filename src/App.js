@@ -232,7 +232,6 @@ class App extends Component {
             />
             <div className="separator" />
             <div className="one" style={notResults}>
-              {/* <div className="name">{homeTeam}</div> */}
               <EditText name="homeTeam" onSave={this.onSaveApp} defaultValue={homeTeam} />{" "}
               <button type="button" className="add" onClick={this.shotz("flyers", 1)}>
                 +
@@ -252,7 +251,6 @@ class App extends Component {
               )}
             </div>
             <div className="two" style={notResults}>
-              {/* <div className="name">{badGuys} </div> */}
               <EditText name="badGuys" onSave={this.onSaveApp} defaultValue={badGuys} />{" "}
               <button type="button" className="add" onClick={this.shotz("badGuys", 1)}>
                 +
