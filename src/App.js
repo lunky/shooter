@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./App.css";
+import { EditText } from "react-edit-text";
 import BoxScore from "./boxscore";
 import ls from "local-storage";
 
@@ -231,7 +232,8 @@ class App extends Component {
             />
             <div className="separator" />
             <div className="one" style={notResults}>
-              <div className="name">{homeTeam}</div>
+              {/* <div className="name">{homeTeam}</div> */}
+              <EditText name="homeTeam" onSave={this.onSaveApp} defaultValue={homeTeam} />{" "}
               <button type="button" className="add" onClick={this.shotz("flyers", 1)}>
                 +
               </button>
@@ -250,7 +252,8 @@ class App extends Component {
               )}
             </div>
             <div className="two" style={notResults}>
-              <div className="name">{badGuys} </div>
+              {/* <div className="name">{badGuys} </div> */}
+              <EditText name="badGuys" onSave={this.onSaveApp} defaultValue={badGuys} />{" "}
               <button type="button" className="add" onClick={this.shotz("badGuys", 1)}>
                 +
               </button>
