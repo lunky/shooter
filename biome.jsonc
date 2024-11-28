@@ -1,0 +1,17 @@
+{
+  "formatter": {
+    "indentStyle": "space" // default is `tab`
+  },
+  "javascript": {
+    "formatter": {
+      "indentStyle": "space", // default is `tab`
+      "lineWidth": 120 // override `formatter.lineWidth`
+    }
+  },
+  "json": {
+    "formatter": {
+      "indentStyle": "space", // default is `tab`
+      "enabled": false
+    }
+  }
+}

@@ -68,7 +68,8 @@ button.goal{
 .boxScorePeriod, 
 .boxScoreGoal, 
 .boxScore {
-  display: inline-block;
+  display: inline-flex;
+  align-items: baseline;
   width: 33%;
 }
 .total{
@@ -92,4 +93,21 @@ button.subtract:hover ,
 button.add:hover {
   background-color: white; 
   color: black;
+}
+pre {
+  white-space: pre-wrap;       /* Since CSS 2.1 */
+  white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+  white-space: -pre-wrap;      /* Opera 4-6 */
+  white-space: -o-pre-wrap;    /* Opera 7 */
+  word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+.shuttlePlaceHolder{
+  display: inline-block;
+  width: 16px;
+  height: 20px;
+}
+.boxScoreInWords{
+  font-style: italic;
+  padding-bottom: 10px;
+  font-size: smaller;
 }
