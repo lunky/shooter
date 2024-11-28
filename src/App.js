@@ -187,7 +187,7 @@ class App extends Component {
   };
 
   render() {
-    const { game, goals, score, savedBadGuys, savedHomeTeam } = this.state;
+    const { game, goals, score } = this.state;
     const notResults = this.state.hideResults ? { display: "none" } : {};
     const results = this.state.hideResults ? {} : { display: "none" };
     const shotsName = process.env.REACT_APP_Shots_name;
@@ -219,11 +219,11 @@ class App extends Component {
             </div>
             <BoxScore
               title={shotsName}
-              homeTeam={savedHomeTeam}
+              homeTeam={homeTeam}
               onSave={this.onSaveApp}
               game={game}
               periodName={periodName}
-              badGuys={savedBadGuys}
+              badGuys={badGuys}
               badmintonMode={this.badmintonMode}
               hideTotals={this.hideTotals}
               scoreInWords={score}
