@@ -15,7 +15,7 @@ class BoxScore extends Component {
     const { game } = this.props;
     const shots = game.map((match, i) => {
       return (
-        <div key={match.period + 1}>
+        <div key={(match.period ?? 0) + 1}>
           <div className="boxScorePeriod">{i === 3 ? "OT" : i + 1}</div>
           <div className="boxScore flyers">{match.flyers}</div>
           <div className="boxScore badGuys">{match.badGuys}</div>
