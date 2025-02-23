@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "https://shooter.midworld.org/hockey/static/css/main.db8c7200.css",
+    "main.js": "https://shooter.midworld.org/hockey/static/js/main.3c406281.js",
+    "index.html": "https://shooter.midworld.org/hockey/index.html",
+    "main.db8c7200.css.map": "https://shooter.midworld.org/hockey/static/css/main.db8c7200.css.map",
+    "main.3c406281.js.map": "https://shooter.midworld.org/hockey/static/js/main.3c406281.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.db8c7200.css",
+    "static/js/main.3c406281.js"
+  ]
+}
