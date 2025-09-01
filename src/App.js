@@ -231,8 +231,10 @@ class App extends Component {
               who={this.state.last}
             />
             <div className="separator" />
-            <div className="one" style={notResults}>
+            <div class="row">
+            <div className="column Zone" style={notResults}>
               <EditText name="homeTeam" onSave={this.onSaveApp} defaultValue={homeTeam} />{" "}
+              <div class="column-content">
               <button type="button" className="add" onClick={this.shotz("flyers", 1)}>
                 +
               </button>
@@ -249,9 +251,11 @@ class App extends Component {
                   </button>
                 </div>
               )}
+              </div>
             </div>
-            <div className="two" style={notResults}>
+            <div className="column Ztwo" style={notResults}>
               <EditText name="badGuys" onSave={this.onSaveApp} defaultValue={badGuys} />{" "}
+              <div class="column-content">
               <button type="button" className="add" onClick={this.shotz("badGuys", 1)}>
                 +
               </button>
@@ -268,6 +272,8 @@ class App extends Component {
                   </button>
                 </div>
               )}
+            </div>
+            </div>
             </div>
             {this.hideGoals ? null : <BoxScore title="goals" homeTeam={homeTeam} game={goals} />}
             <div className="separator" />

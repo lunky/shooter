@@ -30,3 +30,52 @@
     transform: rotate(360deg);
   }
 }
+
+.boxScore {
+  word-wrap: break-word; /* Allow wrapping of long words */
+  overflow-wrap: break-word; /* Ensure wrapping works in all browsers */
+  text-align: center; /* Center the text */
+}
+
+.boxScore.bsFlyers,
+.boxScore.bsBadGuys {
+}
+
+.one div div, .two div div,
+.boxScore div,
+.boxScore div div{
+  overflow-wrap: anywhere; 
+  word-break: break-word;
+  white-space: normal !important; 
+}
+
+.row {
+  display: flex;
+  width: 100%; /* Full width */
+}
+
+.column {
+  flex: 1 0 auto; 
+  min-width: 0; 
+  overflow: hidden;
+}
+
+
+.column-content {
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+}
+.column-content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem; /* Space between buttons */
+}
+
+@media (max-width: 768px) {
+  .column-content {
+    flex-direction: column;
+  }
+
+}
