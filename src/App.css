@@ -36,10 +36,7 @@
   overflow-wrap: break-word;
   text-align: center;
   justify-content: center;
-}
-
-.boxScore.bsFlyers,
-.boxScore.bsBadGuys {
+  align-items: center;
 }
 
 .one div div, .two div div,
