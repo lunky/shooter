@@ -32,9 +32,10 @@
 }
 
 .boxScore {
-  word-wrap: break-word; /* Allow wrapping of long words */
-  overflow-wrap: break-word; /* Ensure wrapping works in all browsers */
-  text-align: center; /* Center the text */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  text-align: center;
+  justify-content: center;
 }
 
 .boxScore.bsFlyers,

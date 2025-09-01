@@ -67,12 +67,18 @@ button.goal{
 .bsBadGuys{
   padding-left: 2px;
 }
-.boxScorePeriod, 
+.boxScorePeriod {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20%;
+}
+
 .boxScoreGoal, 
 .boxScore {
   display: inline-flex;
   align-items: baseline;
-  width: 33%;
+  width: 40%;
 }
 .total{
   border-top: 1px white solid;

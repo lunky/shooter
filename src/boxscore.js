@@ -60,6 +60,7 @@ class BoxScore extends Component {
         {badmintonMode ? <div className="boxScoreInWords">{scoreInWords}</div> : null}
         <div data-testid="title">{title}</div>
         <div />
+        <div class="row">
         <div className="boxScorePeriod">{periodName}</div>
         <div className="boxScore bsFlyers">
           <EditText name="homeTeam" onSave={this.saving} defaultValue={homeTeam} />{" "}
@@ -68,6 +69,7 @@ class BoxScore extends Component {
         <div className="boxScore bsBadGuys">
           <EditText name="badGuys" onSave={this.saving} defaultValue={badGuys} />{" "}
           {this.shuttle(badmintonMode, who, "badGuys")}
+        </div>
         </div>
         <div>{this.showShots()}</div>
         <div>{this.summary()}</div>
