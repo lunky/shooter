@@ -231,10 +231,10 @@ class App extends Component {
               who={this.state.last}
             />
             <div className="separator" />
-            <div class="row">
+            <div className="row">
             <div className="column Zone" style={notResults}>
               <EditText name="homeTeam" onSave={this.onSaveApp} defaultValue={homeTeam} />{" "}
-              <div class="column-content">
+              <div className="column-content">
               <button type="button" className="add" onClick={this.shotz("flyers", 1)}>
                 +
               </button>
@@ -255,7 +255,7 @@ class App extends Component {
             </div>
             <div className="column Ztwo" style={notResults}>
               <EditText name="badGuys" onSave={this.onSaveApp} defaultValue={badGuys} />{" "}
-              <div class="column-content">
+              <div className="column-content">
               <button type="button" className="add" onClick={this.shotz("badGuys", 1)}>
                 +
               </button>
@@ -277,7 +277,7 @@ class App extends Component {
             </div>
             {this.hideGoals ? null : <BoxScore title="goals" homeTeam={homeTeam} game={goals} />}
             <div className="separator" />
-            <button
+            <button className="footerButtons"
               type="button"
               onClick={(e) => {
                 if (window.confirm("Are you sure you want to reset?")) this.reset();
@@ -287,9 +287,11 @@ class App extends Component {
               reset{" "}
             </button>
             &nbsp;&nbsp;
-            <button type="button" onClick={this.summary} className="reset">
+            <button type="button" onClick={this.summary} className="reset footerButtons"
+            >
               summary
             </button>
+            <div className="separator" />
           </div>
         </header>
       </div>
