@@ -1,7 +1,9 @@
-import React from "react";
+import type { CSSProperties } from "react";
 import { EditText } from "react-edit-text";
 import "react-edit-text/dist/index.css";
 import { Team, PeriodScore, SaveEvent } from "./types";
+
+const NBSP = String.fromCodePoint(160);
 
 interface BoxScoreProps {
   title?: string;
@@ -14,7 +16,7 @@ interface BoxScoreProps {
   onSave?: (event: SaveEvent) => void;
   badmintonMode?: boolean;
   hideTotals?: boolean;
-  results?: React.CSSProperties;
+  results?: CSSProperties;
 }
 
 function Shuttle({ badmintonMode, who, side }: { badmintonMode?: boolean; who?: Team; side: Team }) {
@@ -25,12 +27,6 @@ function Shuttle({ badmintonMode, who, side }: { badmintonMode?: boolean; who?: 
 }
 
 export default function BoxScore({ title, homeTeam, badGuys, periodName, scoreInWords, who, game, onSave, badmintonMode, hideTotals, results }: BoxScoreProps) {
-  const nbsp = String.fromCodePoint(160);
-
-  const saving = ({ name, value, previousValue }: SaveEvent) => {
-    onSave?.({ name, value, previousValue });
-  };
-
   return (
     <div>
       {badmintonMode ? <div className="boxScoreInWords">{scoreInWords}</div> : null}
@@ -39,11 +35,11 @@ export default function BoxScore({ title, homeTeam, badGuys, periodName, scoreIn
       <div className="row">
       <div className="boxScorePeriod">{periodName}</div>
       <div className="boxScore bsFlyers">
-        <EditText name="homeTeam" onSave={saving} defaultValue={homeTeam} />{" "}
+        <EditText name="homeTeam" onSave={onSave} defaultValue={homeTeam} />{" "}
         <Shuttle badmintonMode={badmintonMode} who={who} side="flyers" />
       </div>
       <div className="boxScore bsBadGuys">
-        <EditText name="badGuys" onSave={saving} defaultValue={badGuys} />{" "}
+        <EditText name="badGuys" onSave={onSave} defaultValue={badGuys} />{" "}
         <Shuttle badmintonMode={badmintonMode} who={who} side="badGuys" />
       </div>
       </div>
@@ -59,10 +55,10 @@ export default function BoxScore({ title, homeTeam, badGuys, periodName, scoreIn
       <div style={results}>
         <div className="total boxScorePeriod">&nbsp;</div>
         <div className="total boxScore">
-          {hideTotals ? nbsp : game.reduce((acc, cur) => acc + cur.flyers, 0)}
+          {hideTotals ? NBSP : game.reduce((acc, cur) => acc + cur.flyers, 0)}
         </div>
         <div className="total boxScore">
-          {hideTotals ? nbsp : game.reduce((acc, cur) => acc + cur.badGuys, 0)}
+          {hideTotals ? NBSP : game.reduce((acc, cur) => acc + cur.badGuys, 0)}
         </div>
       </div>
     </div>

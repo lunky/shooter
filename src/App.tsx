@@ -32,7 +32,6 @@ interface GameState {
   goals: PeriodScore[];
   game: PeriodScore[];
   period: number;
-  score: string;
   last?: Team;
   savedHomeTeam?: string;
   savedBadGuys?: string;
@@ -53,7 +52,6 @@ const initialState: GameState = {
   goals: initialPeriods(),
   game: initialPeriods(),
   period: 0,
-  score: "0 serving 0",
 };
 
 function gameReducer(state: GameState, action: GameAction): GameState {
@@ -64,8 +62,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
       const game = state.game.map((g, i) =>
         i === state.period ? { ...g, [who]: g[who] + delta } : g
       );
-      const cur = game[state.period];
-      return { ...state, game, last: who, score: `${cur[who]} serving ${cur[opponent(who)]}` };
+      return { ...state, game, last: who };
     }
     case "GOAL": {
       const { who, delta } = action;
@@ -102,13 +99,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
     case "TOGGLE_RESULTS":
       return { ...state, hideResults: !state.hideResults };
     case "RESET":
-      return {
-        ...initialState,
-        goals: initialPeriods(),
-        game: initialPeriods(),
-        savedHomeTeam: state.savedHomeTeam,
-        savedBadGuys: state.savedBadGuys,
-      };
+      return { ...initialState, savedHomeTeam: state.savedHomeTeam, savedBadGuys: state.savedBadGuys };
     case "LOAD":
       return { ...state, ...action.payload };
     case "SAVE_TEAM":
@@ -144,12 +135,28 @@ export default function App() {
     }
   }, []);
 
-  const showPeriod = (): number | string => {
-    if (state.period !== 3) return state.period + 1;
-    return badmintonMode ? state.period : "OT";
+  const handleScore = (who: Team, delta: number) => (e: React.MouseEvent) => {
+    e.preventDefault();
+    dispatch({ type: "SCORE", who, delta });
+    vibrate();
   };
 
-  const { game, goals, score, period, hideResults, last, savedHomeTeam, savedBadGuys } = state;
+  const handleGoal = (who: Team, delta: number) => () => {
+    dispatch({ type: "GOAL", who, delta });
+    vibrate();
+  };
+
+  const { game, goals, period, hideResults, last, savedHomeTeam, savedBadGuys } = state;
+
+  const score = last != null
+    ? `${game[period][last]} serving ${game[period][opponent(last)]}`
+    : "0 serving 0";
+
+  const showPeriod = (): number | string => {
+    if (period !== 3) return period + 1;
+    return badmintonMode ? period : "OT";
+  };
+
   const notResults: React.CSSProperties = hideResults ? { display: "none" } : {};
   const results: React.CSSProperties = hideResults ? {} : { display: "none" };
   const shotsName = import.meta.env.VITE_Shots_name;
@@ -197,20 +204,12 @@ export default function App() {
           <div className="column Zone" style={notResults}>
             <EditText name="homeTeam" onSave={onSave} defaultValue={homeTeam} />{" "}
             <div className="column-content">
-            <button type="button" className="add" onClick={(e) => { e.preventDefault(); dispatch({ type: "SCORE", who: "flyers", delta: 1 }); vibrate(); }}>
-              +
-            </button>
-            <button type="button" className="subtract" onClick={(e) => { e.preventDefault(); dispatch({ type: "SCORE", who: "flyers", delta: -1 }); vibrate(); }}>
-              -
-            </button>
+            <button type="button" className="add" onClick={handleScore("flyers", 1)}>+</button>
+            <button type="button" className="subtract" onClick={handleScore("flyers", -1)}>-</button>
             {badmintonMode ? null : (
               <div>
-                <button type="button" className="goal" onClick={() => { dispatch({ type: "GOAL", who: "flyers", delta: 1 }); vibrate(); }}>
-                  goal
-                </button>
-                <button type="button" className="goal" onClick={() => { dispatch({ type: "GOAL", who: "flyers", delta: -1 }); vibrate(); }}>
-                  -
-                </button>
+                <button type="button" className="goal" onClick={handleGoal("flyers", 1)}>goal</button>
+                <button type="button" className="goal" onClick={handleGoal("flyers", -1)}>-</button>
               </div>
             )}
             </div>
@@ -218,20 +217,12 @@ export default function App() {
           <div className="column Ztwo" style={notResults}>
             <EditText name="badGuys" onSave={onSave} defaultValue={badGuys} />{" "}
             <div className="column-content">
-            <button type="button" className="add" onClick={(e) => { e.preventDefault(); dispatch({ type: "SCORE", who: "badGuys", delta: 1 }); vibrate(); }}>
-              +
-            </button>
-            <button type="button" className="subtract" onClick={(e) => { e.preventDefault(); dispatch({ type: "SCORE", who: "badGuys", delta: -1 }); vibrate(); }}>
-              -
-            </button>
+            <button type="button" className="add" onClick={handleScore("badGuys", 1)}>+</button>
+            <button type="button" className="subtract" onClick={handleScore("badGuys", -1)}>-</button>
             {badmintonMode ? null : (
               <div>
-                <button type="button" className="goal" onClick={() => { dispatch({ type: "GOAL", who: "badGuys", delta: 1 }); vibrate(); }}>
-                  goal
-                </button>
-                <button type="button" className="goal" onClick={() => { dispatch({ type: "GOAL", who: "badGuys", delta: -1 }); vibrate(); }}>
-                  -
-                </button>
+                <button type="button" className="goal" onClick={handleGoal("badGuys", 1)}>goal</button>
+                <button type="button" className="goal" onClick={handleGoal("badGuys", -1)}>-</button>
               </div>
             )}
           </div>
