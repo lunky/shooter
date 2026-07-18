@@ -2,8 +2,16 @@ import React, { useReducer, useEffect, useState, useCallback } from "react";
 import "./App.css";
 import { EditText } from "react-edit-text";
 import BoxScore from "./boxscore";
-import * as ls from "local-storage";
 import { Team, PeriodScore, SaveEvent } from "./types";
+
+function lsGet<T>(key: string): T | null {
+  try { return JSON.parse(localStorage.getItem(key) ?? "null") as T; }
+  catch { return null; }
+}
+
+function lsSet(key: string, value: unknown): void {
+  localStorage.setItem(key, JSON.stringify(value));
+}
 
 const badmintonMode = import.meta.env.VITE_BadmintonMode === "true";
 
@@ -114,24 +122,24 @@ export default function App() {
   const [hasLoaded, setHasLoaded] = useState(false);
 
   useEffect(() => {
-    const savedState = ls.get<Partial<GameState>>("gameState") ?? {};
-    const savedPrefs = ls.get<Partial<GameState>>("gamePrefs") ?? {};
+    const savedState = lsGet<Partial<GameState>>("gameState") ?? {};
+    const savedPrefs = lsGet<Partial<GameState>>("gamePrefs") ?? {};
     dispatch({ type: "LOAD", payload: { ...savedState, ...savedPrefs } });
     setHasLoaded(true);
   }, []);
 
   useEffect(() => {
-    if (hasLoaded) ls.set("gameState", state);
+    if (hasLoaded) lsSet("gameState", state);
   }, [state, hasLoaded]);
 
   const onSave = useCallback(({ name, value }: SaveEvent) => {
     if (name === "homeTeam") {
       dispatch({ type: "SAVE_TEAM", field: "savedHomeTeam", value });
-      ls.set("gamePrefs", { ...(ls.get("gamePrefs") ?? {}), savedHomeTeam: value });
+      lsSet("gamePrefs", { ...(lsGet("gamePrefs") ?? {}), savedHomeTeam: value });
     }
     if (name === "badGuys") {
       dispatch({ type: "SAVE_TEAM", field: "savedBadGuys", value });
-      ls.set("gamePrefs", { ...(ls.get("gamePrefs") ?? {}), savedBadGuys: value });
+      lsSet("gamePrefs", { ...(lsGet("gamePrefs") ?? {}), savedBadGuys: value });
     }
   }, []);
 
