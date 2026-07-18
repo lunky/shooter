@@ -22,3 +22,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 DevTunnels
+/.idea/.gitignore
+/.idea/encodings.xml
+/.idea/indexLayout.xml
+/.idea/vcs.xml
+/dist
