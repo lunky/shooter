@@ -254,7 +254,7 @@ export default function App() {
           <div className="separator" />
         </div>
       </header>
-      <div className="gitHash">{gitHash}</div>
+      <div className="gitHash">ver. {gitHash}</div>
     </div>
   );
 }
