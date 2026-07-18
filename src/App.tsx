@@ -115,7 +115,20 @@ function gameReducer(state: GameState, action: GameAction): GameState {
 export default function App() {
   const [state, dispatch] = useReducer(gameReducer, initialState);
   const [hasLoaded, setHasLoaded] = useState(false);
-  const [view, setView] = useState<"game" | "history">("game");
+  const [view, setView] = useState<"game" | "history">(
+    () => window.location.hash === "#history" ? "history" : "game"
+  );
+
+  const navigate = useCallback((v: "game" | "history") => {
+    setView(v);
+    window.location.hash = v === "history" ? "history" : "";
+  }, []);
+
+  useEffect(() => {
+    const handler = () => setView(window.location.hash === "#history" ? "history" : "game");
+    window.addEventListener("hashchange", handler);
+    return () => window.removeEventListener("hashchange", handler);
+  }, []);
 
   useEffect(() => {
     Promise.all([
@@ -164,7 +177,7 @@ export default function App() {
       badGuys: savedBadGuys ?? import.meta.env.VITE_Badguy_name,
       game,
       goals,
-    }).then(() => { vibrate(); setView("history"); });
+    }).then(() => { vibrate(); navigate("history"); });
   }, [state]);
 
   const { game, goals, period, hideResults, last, savedHomeTeam, savedBadGuys } = state;
@@ -191,7 +204,7 @@ export default function App() {
     return (
       <div className="App">
         <header className="App-header">
-          <GameList onClose={() => setView("game")} />
+          <GameList onClose={() => navigate("game")} />
         </header>
         <div className="gitHash">ver. {gitHash}</div>
       </div>
@@ -280,7 +293,7 @@ export default function App() {
             save
           </button>
           &nbsp;&nbsp;
-          <button type="button" className="footerButtons" onClick={() => setView("history")}>
+          <button type="button" className="footerButtons" onClick={() => navigate("history")}>
             history
           </button>
           <div className="separator" />

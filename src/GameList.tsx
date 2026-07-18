@@ -104,7 +104,7 @@ export default function GameList({ onClose }: GameListProps) {
     <div className="gameList">
       <div className="gameListHeader">
         <h2>Saved Games</h2>
-        <button type="button" className="footerButtons" onClick={onClose}>close</button>
+        <button type="button" className="footerButtons" onClick={onClose}>back</button>
       </div>
       {games.length === 0 && <div className="gameListEmpty">No saved games yet.</div>}
       <div className="gameListItems">
