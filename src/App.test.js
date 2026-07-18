@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom";
-import { render, screen, fireEvent, getByRole } from "@testing-library/react";
+import { render, screen, fireEvent, within } from "@testing-library/react";
 import App from "./App";
 afterEach(() => {
   // Reset process.env after each test
@@ -46,8 +46,8 @@ it("Flyers - starts as zero", async () => {
 
 it("Flyers + Increases correct shot counter", async () => {
   render(<App />);
-  const container = document.querySelector(".one");
-  const upButton = getByRole(container, "button", { name: "+" });
+  const container = document.querySelector(".Zone");
+  const upButton = within(container).getByRole("button", { name: "+" });
   const boxScoreFlyers = document.querySelector("div.flyers");
 
   expect(boxScoreFlyers).toHaveTextContent("0");
@@ -81,13 +81,13 @@ it("BadGuys - can initialize a new test as 99", async () => {
 
 describe("increase/decrease shot counters", () => {
   it.each([
-    [".one", "div.flyers"],
-    [".two", "div.badGuys"],
+    [".Zone", "div.flyers"],
+    [".Ztwo", "div.badGuys"],
   ])("matches correct shot counter", (selector1, selector2) => {
     render(<App />);
     const container = document.querySelector(selector1);
-    const upButton = getByRole(container, "button", { name: "+" });
-    const downButton = getByRole(container, "button", { name: "-" });
+    const upButton = within(container).getByRole("button", { name: "+" });
+    const downButton = within(container).getByRole("button", { name: "-" });
     const boxScore = document.querySelector(selector2);
 
     expect(boxScore).toHaveTextContent("0");
@@ -110,12 +110,12 @@ describe("increase/decrease shot counters", () => {
 
 describe("moves birdie around counters", () => {
   it.each([
-    [".one", "div.boxScore.bsFlyers"],
-    [".two", "div.boxScore.bsBadGuys"],
+    [".Zone", "div.boxScore.bsFlyers"],
+    [".Ztwo", "div.boxScore.bsBadGuys"],
   ])("matches correct shot counter", (selector1, selector2) => {
     render(<App />);
     const container = document.querySelector(selector1);
-    const upButton = getByRole(container, "button", { name: "+" });
+    const upButton = within(container).getByRole("button", { name: "+" });
     fireEvent.click(upButton);
     const boxScore = document.querySelector(selector2);
     expect(boxScore.querySelector("img")).toBeTruthy();
@@ -124,12 +124,12 @@ describe("moves birdie around counters", () => {
 
 describe("score as words", () => {
   it.each([
-    [".one", "div.flyers"],
-    [".two", "div.badGuys"],
+    [".Zone", "div.flyers"],
+    [".Ztwo", "div.badGuys"],
   ])("matches correct shot counter", (selector1, selector2) => {
     render(<App />);
     const container = document.querySelector(selector1);
-    const upButton = getByRole(container, "button", { name: "+" });
+    const upButton = within(container).getByRole("button", { name: "+" });
 
     const scoreInWords = document.querySelector("div.boxScoreInWords");
     expect(scoreInWords).toHaveTextContent("0 serving 0");
@@ -142,10 +142,10 @@ describe("score as words", () => {
   });
   it("keeps correct shot counter", () => {
     render(<App />);
-    const flyersContainer = document.querySelector(".one");
-    const flyersUpButton = getByRole(flyersContainer, "button", { name: "+" });
-    const badGuysContainer = document.querySelector(".two");
-    const badGuysUpButton = getByRole(badGuysContainer, "button", { name: "+" });
+    const flyersContainer = document.querySelector(".Zone");
+    const flyersUpButton = within(flyersContainer).getByRole("button", { name: "+" });
+    const badGuysContainer = document.querySelector(".Ztwo");
+    const badGuysUpButton = within(badGuysContainer).getByRole("button", { name: "+" });
 
     const scoreInWords = document.querySelector("div.boxScoreInWords");
     expect(scoreInWords).toHaveTextContent("0 serving 0");
