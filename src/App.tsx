@@ -2,10 +2,11 @@ import React, { Component } from "react";
 import "./App.css";
 import { EditText } from "react-edit-text";
 import BoxScore from "./boxscore";
-import ls from "local-storage";
+import * as ls from "local-storage";
+import { Team, PeriodScore, SaveEvent } from "./types";
 
-function initialPeriods(badmintonMode) {
-  const periods = [
+function initialPeriods(badmintonMode: boolean): PeriodScore[] {
+  const periods: PeriodScore[] = [
     { flyers: 0, badGuys: 0, period: 1 },
     { flyers: 0, badGuys: 0, period: 2 },
     { flyers: 0, badGuys: 0, period: 3 },
@@ -16,10 +17,24 @@ function initialPeriods(badmintonMode) {
   return periods;
 }
 
-class App extends Component {
-  constructor(props) {
-    super();
-    this.badmintonMode = process.env.REACT_APP_BadmintonMode === "true" || process.env.REACT_APP_BadmintonMode === true;
+interface AppState {
+  hideResults: boolean;
+  goals: PeriodScore[];
+  game: PeriodScore[];
+  period: number;
+  score: string;
+  last?: Team;
+  init?: boolean;
+  savedHomeTeam?: string;
+  savedBadGuys?: string;
+}
+
+class App extends Component<Record<string, never>, AppState> {
+  badmintonMode: boolean;
+
+  constructor(props: Record<string, never>) {
+    super(props);
+    this.badmintonMode = import.meta.env.VITE_BadmintonMode === "true";
     this.state = {
       hideResults: false,
       goals: initialPeriods(this.badmintonMode),
@@ -30,14 +45,12 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const savedState = ls.get("gameState") || [];
-    const savedPrefs = ls.get("gamePrefs") || [];
-    if (!savedState?.length) {
-      this.setState({ ...savedState, ...savedPrefs, init: true });
-    }
+    const savedState = ls.get<Partial<AppState>>("gameState") ?? {};
+    const savedPrefs = ls.get<Partial<AppState>>("gamePrefs") ?? {};
+    this.setState((state) => ({ ...state, ...savedState, ...savedPrefs, init: true }));
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(_prevProps: Record<string, never>, prevState: AppState) {
     if (prevState.init && prevState !== this.state) {
       ls.set("gameState", this.state);
     }
@@ -55,37 +68,39 @@ class App extends Component {
       game: initialPeriods(this.badmintonMode),
       period: 0,
       score: "0 serving 0",
-      last: null,
+      last: undefined,
     });
     this.vibrate();
   };
 
-  goalz = (who, val) => (e) => {
-    const goals = this.state.goals;
-    if (val < 0 && goals[this.state.period][who] === 0) {
+  goalz = (who: Team, val: number) => (_e: React.MouseEvent) => {
+    const { goals, period } = this.state;
+    if (val < 0 && goals[period][who] === 0) {
       return;
     }
     const updated = goals.map((g, i) =>
-      i === this.state.period ? { ...g, [who]: g[who] + val } : g
+      i === period ? { ...g, [who]: g[who] + val } : g
     );
     this.setState({ goals: updated });
     this.vibrate();
   };
 
-  periodInc = (e) => {
-    if (this.state.period === 1 && this.badmintonMode) {
-      if (typeof this.state.game[2] === "undefined") {
+  periodInc = (_e: React.MouseEvent) => {
+    const { period, game, goals } = this.state;
+
+    if (period === 1 && this.badmintonMode) {
+      if (typeof game[2] === "undefined") {
         this.setState((state) => ({
           game: [...state.game, { flyers: 0, badGuys: 0, period: 3 }],
           goals: [...state.goals, { flyers: 0, badGuys: 0, period: 3 }],
         }));
       }
     }
-    if (this.state.period === 2 && this.badmintonMode) {
+    if (period === 2 && this.badmintonMode) {
       return;
     }
-    if (this.state.period === 2) {
-      if (typeof this.state.game[3] === "undefined") {
+    if (period === 2) {
+      if (typeof game[3] === "undefined") {
         this.setState((state) => ({
           game: [...state.game, { flyers: 0, badGuys: 0, period: 4 }],
           goals: [...state.goals, { flyers: 0, badGuys: 0, period: 4 }],
@@ -94,14 +109,14 @@ class App extends Component {
       }
       return;
     }
-    if (this.state.period === 3) {
+    if (period === 3) {
       return;
     }
     this.setState((state) => ({ period: state.period + 1 }));
     this.vibrate();
   };
 
-  periodDec = (e) => {
+  periodDec = (_e: React.MouseEvent) => {
     if (this.state.period === 0) {
       return;
     }
@@ -112,14 +127,14 @@ class App extends Component {
   vibrate = () => {
     try {
       window.navigator.vibrate(100);
-    } catch (v) {}
+    } catch (_v) {}
   };
 
-  opponent = (who) => {
+  opponent = (who: Team): Team => {
     return who === "flyers" ? "badGuys" : "flyers";
   };
 
-  shotz = (who, val) => (e) => {
+  shotz = (who: Team, val: number) => (e: React.MouseEvent) => {
     e.preventDefault();
     const { game, period } = this.state;
     if (val < 0 && game[period][who] === 0) {
@@ -134,7 +149,7 @@ class App extends Component {
     this.vibrate();
   };
 
-  showPeriod() {
+  showPeriod(): number | string {
     if (this.state.period !== 3) {
       return this.state.period + 1;
     }
@@ -144,29 +159,27 @@ class App extends Component {
     return "OT";
   }
 
-  onSaveApp = ({ name, value, previousValue }) => {
+  onSaveApp = ({ name, value }: SaveEvent) => {
     if (name === "homeTeam") {
-      const savedPrefs = ls.get("gamePrefs") || [];
-      const save = { ...savedPrefs, savedHomeTeam: value };
-      this.setState({ ...save });
-      ls.set("gamePrefs", save);
+      const savedPrefs = ls.get<Partial<AppState>>("gamePrefs") ?? {};
+      ls.set("gamePrefs", { ...savedPrefs, savedHomeTeam: value });
+      this.setState({ savedHomeTeam: value });
     }
     if (name === "badGuys") {
-      const savedPrefs = ls.get("gamePrefs") || [];
-      const save = { ...savedPrefs, savedBadGuys: value };
-      this.setState({ ...save });
-      ls.set("gamePrefs", save);
+      const savedPrefs = ls.get<Partial<AppState>>("gamePrefs") ?? {};
+      ls.set("gamePrefs", { ...savedPrefs, savedBadGuys: value });
+      this.setState({ savedBadGuys: value });
     }
   };
 
   render() {
     const { game, goals, score } = this.state;
-    const notResults = this.state.hideResults ? { display: "none" } : {};
-    const results = this.state.hideResults ? {} : { display: "none" };
-    const shotsName = process.env.REACT_APP_Shots_name;
-    const homeTeam = this.state.savedHomeTeam || process.env.REACT_APP_Flyers_name;
-    const badGuys = this.state.savedBadGuys || process.env.REACT_APP_Badguy_name;
-    const periodName = process.env.REACT_APP_PeriodName ?? "Period";
+    const notResults: React.CSSProperties = this.state.hideResults ? { display: "none" } : {};
+    const results: React.CSSProperties = this.state.hideResults ? {} : { display: "none" };
+    const shotsName = import.meta.env.VITE_Shots_name;
+    const homeTeam = this.state.savedHomeTeam ?? import.meta.env.VITE_Flyers_name;
+    const badGuys = this.state.savedBadGuys ?? import.meta.env.VITE_Badguy_name;
+    const periodName = import.meta.env.VITE_PeriodName ?? "Period";
     return (
       <div className="App">
         <header className="App-header">
@@ -249,9 +262,10 @@ class App extends Component {
             </div>
             {this.badmintonMode ? null : <BoxScore title="goals" homeTeam={homeTeam} game={goals} />}
             <div className="separator" />
-            <button className="footerButtons"
+            <button
+              className="footerButtons"
               type="button"
-              onClick={(e) => {
+              onClick={() => {
                 if (window.confirm("Are you sure you want to reset?")) this.reset();
               }}
             >
@@ -259,8 +273,7 @@ class App extends Component {
               reset{" "}
             </button>
             &nbsp;&nbsp;
-            <button type="button" onClick={this.summary} className="reset footerButtons"
-            >
+            <button type="button" onClick={this.summary} className="reset footerButtons">
               summary
             </button>
             <div className="separator" />
