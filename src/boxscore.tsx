@@ -3,6 +3,8 @@ import { EditText } from "react-edit-text";
 import "react-edit-text/dist/index.css";
 import { Team, PeriodScore, SaveEvent } from "./types";
 
+import { winningScore } from "./scoring";
+
 const NBSP = String.fromCodePoint(160);
 
 interface BoxScoreProps {
@@ -47,8 +49,8 @@ export default function BoxScore({ title, homeTeam, badGuys, periodName, scoreIn
         {game.map((match, i) => (
           <div key={(match.period ?? 0) + 1}>
             <div className="boxScorePeriod">{i === 3 ? "OT" : i + 1}</div>
-            <div className="boxScore flyers">{match.flyers}</div>
-            <div className="boxScore badGuys">{match.badGuys}</div>
+            <div className={`boxScore flyers${winningScore(match.flyers, match.badGuys) ? " winningScore" : ""}`}>{match.flyers}</div>
+            <div className={`boxScore badGuys${winningScore(match.badGuys, match.flyers) ? " winningScore" : ""}`}>{match.badGuys}</div>
           </div>
         ))}
       </div>

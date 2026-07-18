@@ -2,6 +2,10 @@
   text-align: center;
 }
 
+button {
+  cursor: pointer;
+}
+
 .App-logo {
   animation: App-logo-spin infinite 20s linear;
   height: 40vmin;
@@ -80,6 +84,144 @@
 .footerButtons{
   padding-top: 3px;
   padding-bottom: 3px;
+  cursor: pointer;
+}
+
+.gameList {
+  width: 100%;
+  max-width: 480px;
+  padding: 1rem;
+}
+
+.gameListHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.gameListHeader h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.gameListEmpty {
+  opacity: 0.6;
+  font-size: 0.9rem;
+}
+
+.gameListItems {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.gameListItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 6px;
+  padding: 0.6rem 0.8rem;
+  text-align: left;
+}
+
+.gameListDate {
+  font-size: 0.65rem;
+  opacity: 0.5;
+}
+
+.gameListScore {
+  font-size: 1rem;
+}
+
+.gameListRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.expandButton {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 0.7rem;
+  opacity: 0.6;
+  padding: 0 0.25rem;
+}
+
+.expandButton:hover {
+  opacity: 1;
+}
+
+.miniBoxScore {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  margin: 0.4rem 0 0.2rem;
+}
+
+.miniBoxScore th,
+.miniBoxScore td {
+  text-align: center;
+  padding: 2px 6px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.miniBoxScoreTeam {
+  text-align: left !important;
+  opacity: 0.8;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gameListScore {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.savedGameTeamName {
+  display: flex !important;
+  align-items: center;
+  line-height: 1;
+}
+
+.savedGameTeamName div,
+.savedGameTeamName input {
+  background: transparent !important;
+  color: white !important;
+  font-size: inherit !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  border-bottom: 1px dashed rgba(255,255,255,0.4) !important;
+}
+
+.gameListDelete {
+  align-self: flex-start;
+  font-size: 0.7rem;
+  opacity: 0.5;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 0;
+}
+
+.gameListDelete:hover {
+  opacity: 1;
+}
+
+.winningScore,
+td.winningScore {
+  color: limegreen;
+  font-weight: bold;
 }
 
 .gitHash {

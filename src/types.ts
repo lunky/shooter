@@ -11,3 +11,12 @@ export interface SaveEvent {
   value: string;
   previousValue: string;
 }
+
+export interface SavedGame {
+  id: string;
+  savedAt: string;
+  homeTeam: string;
+  badGuys: string;
+  game: PeriodScore[];
+  goals: PeriodScore[];
+}

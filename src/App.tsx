@@ -2,16 +2,10 @@ import React, { useReducer, useEffect, useState, useCallback } from "react";
 import "./App.css";
 import { EditText } from "react-edit-text";
 import BoxScore from "./boxscore";
+import GameList from "./GameList";
 import { Team, PeriodScore, SaveEvent } from "./types";
-
-function lsGet<T>(key: string): T | null {
-  try { return JSON.parse(localStorage.getItem(key) ?? "null") as T; }
-  catch { return null; }
-}
-
-function lsSet(key: string, value: unknown): void {
-  localStorage.setItem(key, JSON.stringify(value));
-}
+import { store } from "./store";
+import { saveGame } from "./games";
 
 const badmintonMode = import.meta.env.VITE_BadmintonMode === "true";
 
@@ -67,6 +61,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
     case "SCORE": {
       const { who, delta } = action;
       if (delta < 0 && state.game[state.period][who] === 0) return state;
+      if (delta > 0 && state.game[state.period][who] >= 29) return state;
       const game = state.game.map((g, i) =>
         i === state.period ? { ...g, [who]: g[who] + delta } : g
       );
@@ -120,26 +115,47 @@ function gameReducer(state: GameState, action: GameAction): GameState {
 export default function App() {
   const [state, dispatch] = useReducer(gameReducer, initialState);
   const [hasLoaded, setHasLoaded] = useState(false);
+  const [view, setView] = useState<"game" | "history">(
+    () => window.location.hash === "#history" ? "history" : "game"
+  );
 
-  useEffect(() => {
-    const savedState = lsGet<Partial<GameState>>("gameState") ?? {};
-    const savedPrefs = lsGet<Partial<GameState>>("gamePrefs") ?? {};
-    dispatch({ type: "LOAD", payload: { ...savedState, ...savedPrefs } });
-    setHasLoaded(true);
+  const navigate = useCallback((v: "game" | "history") => {
+    setView(v);
+    window.location.hash = v === "history" ? "history" : "";
   }, []);
 
   useEffect(() => {
-    if (hasLoaded) lsSet("gameState", state);
+    const handler = () => setView(window.location.hash === "#history" ? "history" : "game");
+    window.addEventListener("hashchange", handler);
+    return () => window.removeEventListener("hashchange", handler);
+  }, []);
+
+  useEffect(() => {
+    Promise.all([
+      store.get<Partial<GameState>>("gameState"),
+      store.get<Partial<GameState>>("gamePrefs"),
+    ]).then(([savedState, savedPrefs]) => {
+      dispatch({ type: "LOAD", payload: { ...(savedState ?? {}), ...(savedPrefs ?? {}) } });
+      setHasLoaded(true);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (hasLoaded) store.set("gameState", state);
   }, [state, hasLoaded]);
 
   const onSave = useCallback(({ name, value }: SaveEvent) => {
     if (name === "homeTeam") {
       dispatch({ type: "SAVE_TEAM", field: "savedHomeTeam", value });
-      lsSet("gamePrefs", { ...(lsGet("gamePrefs") ?? {}), savedHomeTeam: value });
+      store.get<Record<string, unknown>>("gamePrefs").then(prefs =>
+        store.set("gamePrefs", { ...(prefs ?? {}), savedHomeTeam: value })
+      );
     }
     if (name === "badGuys") {
       dispatch({ type: "SAVE_TEAM", field: "savedBadGuys", value });
-      lsSet("gamePrefs", { ...(lsGet("gamePrefs") ?? {}), savedBadGuys: value });
+      store.get<Record<string, unknown>>("gamePrefs").then(prefs =>
+        store.set("gamePrefs", { ...(prefs ?? {}), savedBadGuys: value })
+      );
     }
   }, []);
 
@@ -153,6 +169,16 @@ export default function App() {
     dispatch({ type: "GOAL", who, delta });
     vibrate();
   };
+
+  const handleSave = useCallback(() => {
+    const { game, goals, savedHomeTeam, savedBadGuys } = state;
+    saveGame({
+      homeTeam: savedHomeTeam ?? import.meta.env.VITE_Flyers_name,
+      badGuys: savedBadGuys ?? import.meta.env.VITE_Badguy_name,
+      game,
+      goals,
+    }).then(() => { vibrate(); navigate("history"); });
+  }, [state]);
 
   const { game, goals, period, hideResults, last, savedHomeTeam, savedBadGuys } = state;
 
@@ -173,6 +199,17 @@ export default function App() {
   const periodName = import.meta.env.VITE_PeriodName ?? "Period";
 
   const gitHash = import.meta.env.VITE_GIT_HASH?.slice(0, 7) ?? "local";
+
+  if (view === "history") {
+    return (
+      <div className="App">
+        <header className="App-header">
+          <GameList onClose={() => navigate("game")} />
+        </header>
+        <div className="gitHash">ver. {gitHash}</div>
+      </div>
+    );
+  }
 
   return (
     <div className="App">
@@ -250,6 +287,14 @@ export default function App() {
           &nbsp;&nbsp;
           <button type="button" onClick={() => { dispatch({ type: "TOGGLE_RESULTS" }); vibrate(); }} className="reset footerButtons">
             summary
+          </button>
+          <div className="separator" />
+          <button type="button" className="footerButtons" onClick={handleSave}>
+            save
+          </button>
+          &nbsp;&nbsp;
+          <button type="button" className="footerButtons" onClick={() => navigate("history")}>
+            history
           </button>
           <div className="separator" />
         </div>
