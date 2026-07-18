@@ -172,6 +172,8 @@ export default function App() {
   const badGuys = savedBadGuys ?? import.meta.env.VITE_Badguy_name;
   const periodName = import.meta.env.VITE_PeriodName ?? "Period";
 
+  const gitHash = import.meta.env.VITE_GIT_HASH?.slice(0, 7) ?? "local";
+
   return (
     <div className="App">
       <header className="App-header">
@@ -252,6 +254,7 @@ export default function App() {
           <div className="separator" />
         </div>
       </header>
+      <div className="gitHash">ver. {gitHash}</div>
     </div>
   );
 }

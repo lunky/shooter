@@ -6,6 +6,7 @@ interface ImportMetaEnv {
   readonly VITE_Flyers_name: string;
   readonly VITE_Badguy_name: string;
   readonly VITE_PeriodName: string;
+  readonly VITE_GIT_HASH?: string;
 }
 
 interface ImportMeta {
