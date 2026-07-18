@@ -4,52 +4,42 @@ import { EditText } from "react-edit-text";
 import BoxScore from "./boxscore";
 import ls from "local-storage";
 
+function initialPeriods(badmintonMode) {
+  const periods = [
+    { flyers: 0, badGuys: 0, period: 1 },
+    { flyers: 0, badGuys: 0, period: 2 },
+    { flyers: 0, badGuys: 0, period: 3 },
+  ];
+  if (badmintonMode) {
+    periods.pop();
+  }
+  return periods;
+}
+
 class App extends Component {
   constructor(props) {
     super();
     this.badmintonMode = process.env.REACT_APP_BadmintonMode === "true" || process.env.REACT_APP_BadmintonMode === true;
-    this.hideGoals = this.badmintonMode;
-    this.hideTotals = this.badmintonMode;
-    const goals = [
-      { flyers: 0, badGuys: 0, period: 1 },
-      { flyers: 0, badGuys: 0, period: 2 },
-      { flyers: 0, badGuys: 0, period: 3 },
-    ];
-    if (this.badmintonMode) {
-      goals.pop();
-    }
-    const game = [
-      { flyers: 0, badGuys: 0, period: 1 },
-      { flyers: 0, badGuys: 0, period: 2 },
-      { flyers: 0, badGuys: 0, period: 3 },
-    ];
-    if (this.badmintonMode) {
-      game.pop();
-    }
     this.state = {
       hideResults: false,
-      goals: goals,
-      game: game,
+      goals: initialPeriods(this.badmintonMode),
+      game: initialPeriods(this.badmintonMode),
       period: 0,
       score: "0 serving 0",
     };
   }
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.init && prevState !== this.state) {
-      ls.set("gameState", this.state);
-    }
-  }
 
   componentDidMount() {
     const savedState = ls.get("gameState") || [];
-    if (!savedState?.length) {
-      // empty
-      this.setState({ ...savedState, init: true });
-    }
     const savedPrefs = ls.get("gamePrefs") || [];
-    if (!savedPrefs?.length) {
-      // empty
-      this.setState({ ...savedPrefs, init: true });
+    if (!savedState?.length) {
+      this.setState({ ...savedState, ...savedPrefs, init: true });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.init && prevState !== this.state) {
+      ls.set("gameState", this.state);
     }
   }
 
@@ -57,81 +47,60 @@ class App extends Component {
     this.setState((state) => ({ hideResults: !state.hideResults }));
     this.vibrate();
   };
+
   reset = () => {
-    const goals = [
-      { flyers: 0, badGuys: 0, period: 1 },
-      { flyers: 0, badGuys: 0, period: 2 },
-      { flyers: 0, badGuys: 0, period: 3 },
-    ];
-    if (this.badmintonMode) {
-      goals.pop();
-    }
-    const game = [
-      { flyers: 0, badGuys: 0, period: 1 },
-      { flyers: 0, badGuys: 0, period: 2 },
-      { flyers: 0, badGuys: 0, period: 3 },
-    ];
-    if (this.badmintonMode) {
-      game.pop();
-    }
     this.setState({
       hideResults: false,
-      goals: goals,
-      game: game,
+      goals: initialPeriods(this.badmintonMode),
+      game: initialPeriods(this.badmintonMode),
       period: 0,
       score: "0 serving 0",
       last: null,
     });
     this.vibrate();
   };
+
   goalz = (who, val) => (e) => {
     const goals = this.state.goals;
     if (val < 0 && goals[this.state.period][who] === 0) {
       return;
     }
-    goals[this.state.period][who] += val;
-    this.setState({ goals: goals });
+    const updated = goals.map((g, i) =>
+      i === this.state.period ? { ...g, [who]: g[who] + val } : g
+    );
+    this.setState({ goals: updated });
     this.vibrate();
   };
+
   periodInc = (e) => {
     if (this.state.period === 1 && this.badmintonMode) {
       if (typeof this.state.game[2] === "undefined") {
-        const game = this.state.game;
-        game.push({ flyers: 0, badGuys: 0, period: 3 });
-        const goals = this.state.goals;
-        goals.push({ flyers: 0, badGuys: 0, period: 3 });
-        this.setState({ game: game, goals: goals });
+        this.setState((state) => ({
+          game: [...state.game, { flyers: 0, badGuys: 0, period: 3 }],
+          goals: [...state.goals, { flyers: 0, badGuys: 0, period: 3 }],
+        }));
       }
     }
-    if (this.state.period === 2 && this.badmintonMode === true) {
+    if (this.state.period === 2 && this.badmintonMode) {
       return;
     }
     if (this.state.period === 2) {
       if (typeof this.state.game[3] === "undefined") {
-        const game = this.state.game;
-        game.push({ flyers: 0, badGuys: 0, period: 4 });
-        const goals = this.state.goals;
-        goals.push({ flyers: 0, badGuys: 0, period: 4 });
-        this.setState({ game: game, goals: goals, period: 4 });
+        this.setState((state) => ({
+          game: [...state.game, { flyers: 0, badGuys: 0, period: 4 }],
+          goals: [...state.goals, { flyers: 0, badGuys: 0, period: 4 }],
+          period: state.period + 1,
+        }));
       }
-    }
-
-    if (this.badmintonMode && this.state.period === 2) {
       return;
     }
     if (this.state.period === 3) {
       return;
     }
-    const periods = this.state.game;
-    const nextPeriod = periods[this.state.period + 1];
-    this.setState((state) => ({
-      flyers: nextPeriod.flyers,
-      badGuys: nextPeriod.badGuys,
-      periods: periods,
-      period: state.period + 1,
-    }));
+    this.setState((state) => ({ period: state.period + 1 }));
     this.vibrate();
   };
+
   periodDec = (e) => {
     if (this.state.period === 0) {
       return;
@@ -149,15 +118,19 @@ class App extends Component {
   opponent = (who) => {
     return who === "flyers" ? "badGuys" : "flyers";
   };
+
   shotz = (who, val) => (e) => {
     e.preventDefault();
-    const game = this.state.game;
-    if (val < 0 && game[this.state.period][who] === 0) {
+    const { game, period } = this.state;
+    if (val < 0 && game[period][who] === 0) {
       return;
     }
-    game[this.state.period][who] += val;
-    const score = `${game[this.state.period][who]} serving ${game[this.state.period][this.opponent(who)]}`;
-    this.setState({ last: who, score: score, game: game });
+    const updated = game.map((g, i) =>
+      i === period ? { ...g, [who]: g[who] + val } : g
+    );
+    const cur = updated[period];
+    const score = `${cur[who]} serving ${cur[this.opponent(who)]}`;
+    this.setState({ last: who, score, game: updated });
     this.vibrate();
   };
 
@@ -165,14 +138,13 @@ class App extends Component {
     if (this.state.period !== 3) {
       return this.state.period + 1;
     }
-    if (this.badmintonMode === true) {
+    if (this.badmintonMode) {
       return this.state.period;
     }
     return "OT";
   }
 
   onSaveApp = ({ name, value, previousValue }) => {
-    console.log(`app ${name} saved as: ${value} (prev: ${previousValue})`);
     if (name === "homeTeam") {
       const savedPrefs = ls.get("gamePrefs") || [];
       const save = { ...savedPrefs, savedHomeTeam: value };
@@ -226,7 +198,7 @@ class App extends Component {
               periodName={periodName}
               badGuys={badGuys}
               badmintonMode={this.badmintonMode}
-              hideTotals={this.hideTotals}
+              hideTotals={this.badmintonMode}
               scoreInWords={score}
               who={this.state.last}
             />
@@ -241,7 +213,7 @@ class App extends Component {
               <button type="button" className="subtract" onClick={this.shotz("flyers", -1)}>
                 -
               </button>
-              {this.hideGoals ? null : (
+              {this.badmintonMode ? null : (
                 <div>
                   <button type="button" className="goal" onClick={this.goalz("flyers", 1)}>
                     goal
@@ -262,7 +234,7 @@ class App extends Component {
               <button type="button" className="subtract" onClick={this.shotz("badGuys", -1)}>
                 -
               </button>
-              {this.hideGoals ? null : (
+              {this.badmintonMode ? null : (
                 <div>
                   <button type="button" className="goal" onClick={this.goalz("badGuys", 1)}>
                     goal
@@ -275,7 +247,7 @@ class App extends Component {
             </div>
             </div>
             </div>
-            {this.hideGoals ? null : <BoxScore title="goals" homeTeam={homeTeam} game={goals} />}
+            {this.badmintonMode ? null : <BoxScore title="goals" homeTeam={homeTeam} game={goals} />}
             <div className="separator" />
             <button className="footerButtons"
               type="button"

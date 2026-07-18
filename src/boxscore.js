@@ -3,14 +3,6 @@ import { EditText } from "react-edit-text";
 import "react-edit-text/dist/index.css";
 
 class BoxScore extends Component {
-  shouldComponentUpdate(nextProps) {
-    return (
-      this.props.game[0] !== nextProps[0] ||
-      this.props.game[1] !== nextProps[1] ||
-      this.props.game[2] !== nextProps[2] ||
-      (typeof this.props.game[3] !== "undefined" && this.props.game[3] !== nextProps[3])
-    );
-  }
   showShots() {
     const { game } = this.props;
     const shots = game.map((match, i) => {
@@ -24,18 +16,19 @@ class BoxScore extends Component {
     });
     return shots;
   }
+
   summary() {
     const { game, results, hideTotals } = this.props;
     const nbsp = String.fromCodePoint(160);
-    const shots = (
+    return (
       <div style={results}>
         <div className="total boxScorePeriod">&nbsp;</div>
         <div className="total boxScore">{hideTotals ? nbsp : game.reduce((acc, cur) => acc + cur.flyers, 0)}</div>
         <div className="total boxScore">{hideTotals ? nbsp : game.reduce((acc, cur) => acc + cur.badGuys, 0)}</div>
       </div>
     );
-    return shots;
   }
+
   shuttle(badmintonMode, who, side) {
     return badmintonMode ? (
       who === side ? (
@@ -45,14 +38,14 @@ class BoxScore extends Component {
       )
     ) : null;
   }
+
   saving = ({ name, value, previousValue }) => {
     const { onSave } = this.props;
-
     if (onSave != null) {
       onSave({ name, value, previousValue });
     }
-    console.log(`boxscore ${name} saved as: ${value} (prev: ${previousValue})`);
   };
+
   render() {
     const { title, homeTeam, badGuys, periodName, scoreInWords, who, badmintonMode } = this.props;
     return (
@@ -77,4 +70,5 @@ class BoxScore extends Component {
     );
   }
 }
+
 export default BoxScore;
